@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thonburi Flood Watch V0.3 Preview</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#07111f;color:#f6f9fc;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(720px,calc(100% - 20px));margin:auto;padding:18px 0 40px}.ey{font-size:10px;letter-spacing:.12em;color:#9db0c6;font-weight:800}h1{font-size:34px;margin:5px 0 2px}p{color:#9db0c6;margin:0}.notice,.card,.panel{border:1px solid rgba(255,255,255,.1);background:#0d1b2a;border-radius:18px}.notice{padding:11px 13px;margin:16px 0;color:#ffdd7b;font-size:12px}.grid{display:grid;gap:10px}.card{padding:16px}.card small{color:#9db0c6}.card b{display:block;font-size:28px;margin:15px 0 4px}.context{margin-top:10px}.panel{padding:16px;margin-top:10px}h2{font-size:18px;margin:0 0 10px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{padding:7px 9px;border-radius:999px;background:#102338;color:#b8dcff;font-size:11px}.bar{height:230px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#102b45,#0b1827);color:#9db0c6;text-align:center;padding:20px}@media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body><main class="wrap">
+<div class="ey">MOBILE LAYOUT PREVIEW • V0.3</div><h1>Thonburi Flood Watch</h1><p>บางกอกน้อย • ธนบุรี • บางกอกใหญ่</p>
+<div class="notice">ไฟล์นี้เป็น Preview หน้าตาเท่านั้น จึงไม่แสดงค่าจำลองเป็นข้อมูลจริง — รัน Next.js เพื่อโหลด BMA/TMD/RID จริง</div>
+<section class="grid">
+<div class="card"><small>BMA • ฝน 1 ชม.</small><b>—</b><small>near real-time</small></div>
+<div class="card"><small>BMA • คลองมอญ</small><b>—</b><small>ระดับน้ำจริง</small></div>
+<div class="card"><small>BMA • ถนน</small><b>—</b><small>road sensor</small></div>
+</section>
+<section class="grid context">
+<div class="card"><small>TMD • โอกาสฝน</small><b>— %</b><small>Bangkok forecast</small></div>
+<div class="card"><small>RID • C.29 บางไทร</small><b>— m³/s</b><small>upstream context</small></div>
+<div class="card"><small>Bangkok Port • Tide</small><b>— m MSL</b><small>Prediction ไม่ใช่ sensor live</small></div>
+</section>
+<section class="panel"><h2>แผนที่ BMA station</h2><div class="bar">MapLibre + OpenStreetMap<br/>สถานีฝน • ระดับน้ำ • น้ำท่วมถนน</div></section>
+<section class="panel"><h2>Sources</h2><div class="chips"><span class="chip">BMA DDS</span><span class="chip">TMD</span><span class="chip">RID C.29</span><span class="chip">Hydrographic Dept.</span></div></section>
+</main></body></html>
