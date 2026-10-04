@@ -33,12 +33,44 @@ function markRain(stations: RainStation[], stale: boolean): RainStation[] {
   }));
 }
 
+function normalizeThaiWaterWater(station: WaterStation) {
+  if (!station.sourceStatus.includes("ThaiWater fallback")) return station;
+
+  // ThaiWater water-level situation classes are hydrological bands, not the
+  // BMA alert vocabulary: level 3 = normal, level 4 = high water, level 5 =
+  // over-bank. The relay script originally rendered 3/4 as warning/critical.
+  // Normalize those labels here so a nearby "high water" station is not shown
+  // as a false emergency. Explicit over-bank remains CRITICAL.
+  if (station.sourceStatus.includes("ล้นตลิ่ง")) return station;
+
+  if (station.sourceStatus.includes("วิกฤต")) {
+    return {
+      ...station,
+      sourceStatus: station.sourceStatus.replace("วิกฤต", "น้ำมาก"),
+      severity: "WATCH" as const,
+    };
+  }
+
+  if (station.sourceStatus.includes("เตือนภัย")) {
+    return {
+      ...station,
+      sourceStatus: station.sourceStatus.replace("เตือนภัย", "น้ำปกติ"),
+      severity: "NORMAL" as const,
+    };
+  }
+
+  return station;
+}
+
 function markWater(stations: WaterStation[], stale: boolean): WaterStation[] {
-  return stations.map((station) => ({
-    ...station,
-    sourceStatus: relayLabel(station.sourceStatus, stale),
-    severity: stale ? "OFFLINE" : station.severity,
-  }));
+  return stations.map((raw) => {
+    const station = normalizeThaiWaterWater(raw);
+    return {
+      ...station,
+      sourceStatus: relayLabel(station.sourceStatus, stale),
+      severity: stale ? "OFFLINE" : station.severity,
+    };
+  });
 }
 
 function markRoad(stations: RoadFloodStation[], stale: boolean): RoadFloodStation[] {
