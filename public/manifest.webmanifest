@@ -1,0 +1,9 @@
+{
+  "name": "Thonburi Flood Watch",
+  "short_name": "Flood Watch",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#0b1220",
+  "lang": "th"
+}
