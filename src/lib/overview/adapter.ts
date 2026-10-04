@@ -12,13 +12,14 @@ export async function getLiveOverview(): Promise<LiveOverview> {
   ]);
   const tide = getBangkokPortTide();
   const errors: string[] = [];
+
   if (!bma.ok) errors.push(...bma.errors.map((e) => `BMA: ${e}`));
   if (!tmd.ok && tmd.error) errors.push(`TMD: ${tmd.error}`);
   if (!ridC29.ok && ridC29.error) errors.push(`RID: ${ridC29.error}`);
   if (!tide.ok && tide.error) errors.push(`Tide: ${tide.error}`);
 
   return {
-    ok: bma.ok || tmd.ok || ridC29.ok || tide.ok,
+    ok: errors.length === 0,
     generatedAt: new Date().toISOString(),
     bma,
     tmd,
