@@ -1,13 +1,18 @@
 import type { TmdBangkokForecast } from "./types";
 
-const BASE = "https://www.tmd.go.th/forecast/daily";
+const BASES = [
+  "https://www.tmd.go.th/forecast/daily",
+  "https://www5.tmd.go.th/forecast/daily",
+] as const;
+const PRIMARY_BASE = BASES[0];
+const WEATHER_THAI = "https://www5.tmd.go.th/weather/weatherthailand";
 
 function decodeHtml(value: string) {
   return value
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
     .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p>|<\/div>|<\/li>|<\/h\d>/gi, "\n")
+    .replace(/<\/p>|<\/div>|<\/li>|<\/h\d>|<\/section>/gi, "\n")
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;|&#160;/gi, " ")
     .replace(/&amp;/gi, "&")
@@ -36,20 +41,21 @@ function bangkokDateParts(date = new Date()) {
 function candidateUrls() {
   const { year, month, day, hour } = bangkokDateParts();
   const dmy = `${day}${month}${year}`;
-  // TMD URLs observed: 11:00 issue => ...1200, 05:00 issue => ...0600.
   const slots = hour >= 12 ? ["1200", "0600"] : ["0600", "1200"];
-  return [...slots.map((s) => `${BASE}/${dmy}${s}`), BASE];
+  const dated = BASES.flatMap((base) => slots.map((slot) => `${base}/${dmy}${slot}`));
+  return [...dated, ...BASES, WEATHER_THAI];
 }
 
 async function fetchHtml(url: string) {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": "ThonburiFloodWatch/0.3 (+community-dashboard)",
-      Accept: "text/html,application/xhtml+xml",
-      "Accept-Language": "th,en;q=0.8",
+      "User-Agent": "Mozilla/5.0 (compatible; ThonburiFloodWatch/0.3; +https://thonburi-flood-watch.vercel.app)",
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "Accept-Language": "th-TH,th;q=0.9,en;q=0.7",
+      "Cache-Control": "no-cache",
     },
-    signal: AbortSignal.timeout(12000),
-    next: { revalidate: 900 },
+    signal: AbortSignal.timeout(20000),
+    cache: "no-store",
   });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.text();
@@ -60,22 +66,34 @@ function num(pattern: RegExp, text: string) {
   return m ? Number(m[1]) : null;
 }
 
-function parse(url: string, html: string): TmdBangkokForecast | null {
-  const text = decodeHtml(html);
-  const marker = text.search(/กรุงเทพ(?:มหานคร)?และปริมณฑล/);
-  if (marker < 0) return null;
-  let section = text.slice(marker);
+function findBangkokSection(text: string) {
+  const matches = [...text.matchAll(/กรุงเทพ(?:มหานคร)?(?:ฯ)?\s*และปริมณฑล/g)];
+  const last = matches.at(-1);
+  if (!last || last.index == null) return null;
+
+  let section = text.slice(last.index);
   const end = section.search(/\nออกประกาศ|\nTags:|\nหมวดหมู่:/);
   if (end > 0) section = section.slice(0, end);
+  return section;
+}
+
+function parse(url: string, html: string): TmdBangkokForecast | null {
+  const text = decodeHtml(html);
+  const section = findBangkokSection(text);
+  if (!section) return null;
 
   const rainChancePercent = num(/ร้อยละ\s*(\d{1,3})\s*ของพื้นที่/, section);
-  const temp = section.match(/อุณหภูมิต่ำสุด\s*(\d+)\s*-\s*(\d+)[\s\S]{0,80}?อุณหภูมิสูงสุด\s*(\d+)\s*-\s*(\d+)/);
-  const wind = section.match(/ลม[^\n]{0,120}?ความเร็ว\s*([\d\-]+\s*กม\.\/ชม\.)/);
-  const issued = text.match(/ประจำวันที่\s*([^\n]{0,80})/)?.[1]?.trim() || "";
-  const period = text.match(/(\d{1,2}:\d{2}\s*น\.\s*วันนี้\s*ถึง\s*\d{1,2}:\d{2}\s*น\.\s*วันพรุ่งนี้)/)?.[1] || "";
+  const temp = section.match(/อุณหภูมิต่ำสุด\s*(\d+)\s*-\s*(\d+)[\s\S]{0,100}?อุณหภูมิสูงสุด\s*(\d+)\s*-\s*(\d+)/);
+  const wind = section.match(/ลม[^\n]{0,160}?ความเร็ว\s*([\d\-]+\s*กม\.\/ชม\.)/);
+  const issued = text.match(/ประจำวันที่\s*([^\n]{0,80})/)?.[1]?.trim()
+    || text.match(/ออกประกาศ\s*([^\n]{0,80})/)?.[1]?.trim()
+    || "";
+  const period = text.match(/(\d{1,2}:\d{2}\s*น\.\s*(?:วันนี้\s*(?:ถึง|-)|วันนี้\s*-?)\s*\d{1,2}:\d{2}\s*น\.\s*วันพรุ่งนี้)/)?.[1]
+    || text.match(/(\d{1,2}:\d{2}\s*น\.\s*วันนี้\s*-\s*\d{1,2}:\d{2}\s*น\.\s*วันพรุ่งนี้)/)?.[1]
+    || "";
 
   const summary = section
-    .replace(/กรุงเทพ(?:มหานคร)?และปริมณฑล\s*/g, "")
+    .replace(/กรุงเทพ(?:มหานคร)?(?:ฯ)?\s*และปริมณฑล\s*/g, "")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -109,7 +127,7 @@ export async function getTmdBangkokForecast(): Promise<TmdBangkokForecast> {
   }
   return {
     ok: false,
-    sourceUrl: BASE,
+    sourceUrl: PRIMARY_BASE,
     fetchedAt: new Date().toISOString(),
     issuedAtRaw: "",
     periodRaw: "",
