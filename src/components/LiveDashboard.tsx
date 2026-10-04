@@ -5,7 +5,7 @@ import FloodMap from "@/components/FloodMap";
 import MetricCard from "@/components/MetricCard";
 import StatusBadge from "@/components/StatusBadge";
 import { buildFloodMapPoints } from "@/lib/map-points";
-import type { Severity } from "@/lib/bma/types";
+import type { Severity, RainStation, WaterStation } from "@/lib/bma/types";
 import type { LiveOverview } from "@/lib/overview/types";
 
 const rank: Record<Severity, number> = {
@@ -21,6 +21,10 @@ function worstStatus(data: LiveOverview | null): Severity {
   if (!data?.bma) return "UNKNOWN";
   const all = [...data.bma.rain, ...data.bma.water, ...data.bma.roadFlood].map((s) => s.severity);
   return all.reduce<Severity>((worst, current) => rank[current] > rank[worst] ? current : worst, "NORMAL");
+}
+
+function isThaiWater(status: string | null | undefined) {
+  return Boolean(status && /ThaiWater/.test(status));
 }
 
 function fmt(value: number | null | undefined, unit: string, decimals = 1) {
@@ -60,6 +64,27 @@ function trendLabel(trend: string) {
   return "ไม่ทราบแนวโน้ม";
 }
 
+function rainTitle(station: RainStation | undefined) {
+  return isThaiWater(station?.sourceStatus)
+    ? "ฝน 1 ชั่วโมง • สถานีใกล้บางกอกน้อย (ThaiWater)"
+    : "ฝน 1 ชั่วโมง • บางกอกน้อย";
+}
+
+function waterTitle(station: WaterStation | undefined, place: string) {
+  return isThaiWater(station?.sourceStatus)
+    ? `ระดับน้ำใกล้${place} • ThaiWater`
+    : place;
+}
+
+function sensorSubtitle(station: RainStation | WaterStation | undefined, fallback = "BMA DDS") {
+  if (!station) return fallback;
+  const time = station.observedAtRaw || "ไม่มีเวลาอัปเดต";
+  if (isThaiWater(station.sourceStatus)) {
+    return `${station.name} • ${station.sourceStatus} • ${time}`;
+  }
+  return `${station.code} • ${station.name} • ${station.sourceStatus} • ${time}`;
+}
+
 export default function LiveDashboard() {
   const [data, setData] = useState<LiveOverview | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,8 +109,14 @@ export default function LiveDashboard() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const status = worstStatus(data);
   const bma = data?.bma;
+  const fallbackActive = Boolean(
+    bma && [...bma.rain, ...bma.water, ...bma.roadFlood].some((s) => isThaiWater(s.sourceStatus)),
+  );
+  const fallbackCritical = Boolean(
+    fallbackActive && bma?.water.some((s) => s.severity === "CRITICAL"),
+  );
+  const status: Severity = fallbackActive ? "OFFLINE" : worstStatus(data);
   const mapPoints = useMemo(() => bma ? buildFloodMapPoints(bma) : [], [bma]);
 
   const bknRain = bma?.rain.filter((s) => s.district === "บางกอกน้อย") ?? [];
@@ -96,6 +127,7 @@ export default function LiveDashboard() {
   const bangBamru = bma?.water.find((s) => s.code === "WL.BBR.01");
   const bangkokYai = bma?.water.find((s) => s.code === "WL.BKY.01");
   const samre = bma?.water.find((s) => s.code === "WL.SRE.01");
+  const roadUsesThaiWater = Boolean(bma?.roadFlood.some((s) => isThaiWater(s.sourceStatus)));
   const tmd = data?.tmd;
   const rid = data?.ridC29;
   const tide = data?.tide;
@@ -107,7 +139,7 @@ export default function LiveDashboard() {
     <>
       <header className="hero">
         <div>
-          <div className="eyebrow">BANGKOK • MULTI-SOURCE FLOOD CONTEXT V0.3</div>
+          <div className="eyebrow">BANGKOK • MULTI-SOURCE FLOOD CONTEXT V0.5</div>
           <h1>Thonburi Flood Watch</h1>
           <p>บางกอกน้อย • ธนบุรี • บางกอกใหญ่</p>
         </div>
@@ -115,8 +147,21 @@ export default function LiveDashboard() {
       </header>
 
       <div className="freshness">
-        {loading ? "กำลังดึงข้อมูลจาก BMA • TMD • RID และตารางน้ำขึ้นลง…" : data ? `รวมข้อมูลล่าสุด ${displayTime(data.generatedAt)} • หน้าเว็บรีเฟรชทุก 5 นาที` : "ยังไม่มีข้อมูล"}
+        {loading ? "กำลังดึงข้อมูลจากแหล่งข้อมูลทางการ…" : data ? `รวมข้อมูลล่าสุด ${displayTime(data.generatedAt)} • หน้าเว็บรีเฟรชทุก 5 นาที` : "ยังไม่มีข้อมูล"}
       </div>
+
+      {fallbackActive ? (
+        <div className="source-warning">
+          ⚠️ BMA direct feed ติดต่อจาก Cloud ไม่ได้ในขณะนี้ • ระบบใช้ข้อมูลตรวจวัด ThaiWater/สสน. จากสถานีใกล้เคียงเป็น fallback และระบุแหล่งที่มาบนแต่ละการ์ด • ค่าระดับน้ำ fallback ไม่ใช่ค่าจากเซนเซอร์ BMA เดิม
+        </div>
+      ) : null}
+
+      {fallbackCritical ? (
+        <section className="forecast-alert">
+          <strong>⚠️ ThaiWater nearby water-level context</strong>
+          <span>สถานีตรวจวัดใกล้พื้นที่อย่างน้อยหนึ่งแห่งมีสถานะระดับสูงจากต้นทาง ThaiWater โปรดใช้เป็นข้อมูลบริบทและตรวจประกาศทางการก่อนตัดสินใจด้านความปลอดภัย</span>
+        </section>
+      ) : null}
 
       {error ? <div className="source-warning">⚠️ {error} — ระบบจะไม่สร้างค่าจำลองทดแทนแหล่งข้อมูลที่ล้มเหลว</div> : null}
 
@@ -129,39 +174,39 @@ export default function LiveDashboard() {
 
       <section className="grid">
         <MetricCard
-          title="ฝน 1 ชั่วโมง • บางกอกน้อย"
+          title={rainTitle(maxRain)}
           value={maxRain ? fmt(maxRain.rain1h, "mm", 1) : "—"}
-          subtitle={maxRain ? `${maxRain.code} • ${maxRain.name} • ${maxRain.observedAtRaw}` : "BMA DDS"}
+          subtitle={sensorSubtitle(maxRain)}
           tone={tone(maxRain?.severity ?? "UNKNOWN")}
         />
         <MetricCard
-          title="คลองมอญ • ด้านใน"
+          title={waterTitle(khlongMon, "คลองมอญ")}
           value={fmt(khlongMon?.levelInside, "ม.รทก.", 2)}
-          subtitle={khlongMon ? `${khlongMon.code} • ${khlongMon.sourceStatus} • ${khlongMon.observedAtRaw}` : "BMA DDS"}
+          subtitle={sensorSubtitle(khlongMon)}
           tone={tone(khlongMon?.severity ?? "UNKNOWN")}
         />
         <MetricCard
-          title="คลองบางบำหรุ"
+          title={waterTitle(bangBamru, "คลองบางบำหรุ")}
           value={fmt(bangBamru?.levelInside, "ม.รทก.", 2)}
-          subtitle={bangBamru ? `${bangBamru.code} • ${bangBamru.observedAtRaw}` : "BMA DDS"}
+          subtitle={sensorSubtitle(bangBamru)}
           tone={tone(bangBamru?.severity ?? "UNKNOWN")}
         />
         <MetricCard
-          title="คลองบางกอกใหญ่"
+          title={waterTitle(bangkokYai, "คลองบางกอกใหญ่")}
           value={fmt(bangkokYai?.levelInside, "ม.รทก.", 2)}
-          subtitle={bangkokYai ? `${bangkokYai.code} • ${bangkokYai.observedAtRaw}` : "BMA DDS"}
+          subtitle={sensorSubtitle(bangkokYai)}
           tone={tone(bangkokYai?.severity ?? "UNKNOWN")}
         />
         <MetricCard
-          title="คลองสำเหร่"
+          title={waterTitle(samre, "คลองสำเหร่")}
           value={fmt(samre?.levelInside, "ม.รทก.", 2)}
-          subtitle={samre ? `${samre.code} • ${samre.observedAtRaw}` : "BMA DDS"}
+          subtitle={sensorSubtitle(samre)}
           tone={tone(samre?.severity ?? "UNKNOWN")}
         />
         <MetricCard
           title="คลองมอญ • ด้านนอก"
           value={fmt(khlongMon?.levelOutside, "ม.รทก.", 2)}
-          subtitle="ค่าด้านนอกสถานีตามตาราง BMA DDS"
+          subtitle={isThaiWater(khlongMon?.sourceStatus) ? "ThaiWater fallback ไม่มีค่าด้านนอกของสถานี BMA เดิม" : "ค่าด้านนอกสถานีตามตาราง BMA DDS"}
           tone={tone(khlongMon?.severity ?? "UNKNOWN")}
         />
       </section>
@@ -190,8 +235,8 @@ export default function LiveDashboard() {
       <section className="panel">
         <div className="panel-head">
           <div>
-            <h2>สถานการณ์ถนน • เซนเซอร์จริง กทม.</h2>
-            <p>บางกอกน้อย — ใช้ค่าที่ BMA DDS เผยแพร่โดยตรง</p>
+            <h2>{roadUsesThaiWater ? "สถานการณ์ถนน • ThaiWater relay เซนเซอร์ กทม." : "สถานการณ์ถนน • เซนเซอร์จริง กทม."}</h2>
+            <p>{roadUsesThaiWater ? "บางกอกน้อย — relay ของเซนเซอร์ถนน กทม.; เวลาอัปเดตและสถานะ stale แสดงตามต้นทาง" : "บางกอกน้อย — ใช้ค่าที่ BMA DDS เผยแพร่โดยตรง"}</p>
           </div>
         </div>
         <div className="road-list">
@@ -232,14 +277,16 @@ export default function LiveDashboard() {
       <section className="panel map-panel">
         <div className="panel-head">
           <div>
-            <h2>แผนที่สถานีจริง</h2>
-            <p>พิกัดสถานี BMA DDS • ฝน + ระดับน้ำ + น้ำท่วมถนน</p>
+            <h2>{fallbackActive ? "แผนที่สถานีตรวจวัดและสถานี fallback" : "แผนที่สถานีจริง"}</h2>
+            <p>{fallbackActive ? "พิกัดจริงของสถานีที่กำลังใช้ • BMA เมื่อเข้าถึงได้ + ThaiWater fallback" : "พิกัดสถานี BMA DDS • ฝน + ระดับน้ำ + น้ำท่วมถนน"}</p>
           </div>
           <span className="live-chip">NEAR REAL-TIME</span>
         </div>
         <FloodMap points={mapPoints} />
         <p className="map-note">
-          หมุดทั้งหมดเป็นพิกัดสถานีของสำนักการระบายน้ำ กทม. ส่วน TMD, RID C.29 และน้ำขึ้นลงเป็นข้อมูลบริบทภายนอกแผนที่ใน V0.3; หากต้นทางขัดข้อง ระบบแสดงสถานะ unavailable/stale แทนการสร้างค่าเอง
+          {fallbackActive
+            ? "เมื่อ BMA direct feed ติดต่อจาก Cloud ไม่ได้ ระบบใช้สถานีตรวจวัดใกล้เคียงจาก ThaiWater/สสน. โดยแสดงชื่อ พิกัด เวลา และสถานะ fallback อย่างชัดเจน; ข้อมูลเก่าจะถูกทำเครื่องหมายแทนการสร้างค่าใหม่"
+            : "หมุดทั้งหมดเป็นพิกัดสถานีของสำนักการระบายน้ำ กทม. ส่วน TMD, RID C.29 และน้ำขึ้นลงเป็นข้อมูลบริบทภายนอกแผนที่; หากต้นทางขัดข้อง ระบบแสดง unavailable/stale แทนการสร้างค่าเอง"}
         </p>
       </section>
 
@@ -247,13 +294,14 @@ export default function LiveDashboard() {
         <div className="panel-head">
           <div>
             <h2>แหล่งข้อมูล</h2>
-            <p>แยกข้อมูลตรวจวัดจริงออกจากข้อมูลพยากรณ์อย่างชัดเจน</p>
+            <p>แยกข้อมูลตรวจวัดจริง ข้อมูล fallback และข้อมูลพยากรณ์อย่างชัดเจน</p>
           </div>
         </div>
         <div className="source-list">
           <a href="https://weather.bangkok.go.th/rain" target="_blank" rel="noreferrer">BMA Rain</a>
           <a href="https://weather.bangkok.go.th/Water/" target="_blank" rel="noreferrer">BMA Water Level</a>
           <a href="https://weather.bangkok.go.th/floodbangkok" target="_blank" rel="noreferrer">BMA Road Flood</a>
+          <a href="https://www.thaiwater.net/" target="_blank" rel="noreferrer">ThaiWater / HII Fallback</a>
           <a href={tmd?.sourceUrl || "https://www.tmd.go.th/forecast/daily"} target="_blank" rel="noreferrer">TMD Forecast</a>
           <a href={rid?.sourceUrl || "https://www.rid.go.th/th/water-situation"} target="_blank" rel="noreferrer">RID C.29 Report</a>
           <a href={tide?.sourceUrl || "https://hydro.navy.mi.th/waterlaveltable"} target="_blank" rel="noreferrer">Hydrographic Tide Table</a>
