@@ -21,6 +21,17 @@ function atIso(year: number, month: number, day: number, hour: number) {
   return new Date(local).toISOString();
 }
 
+function pointsForDay(year: number, month: number, day: number): TidePoint[] {
+  const values = year === 2026 ? BANGKOK_PORT_2026_MSL[month]?.[day] : undefined;
+  if (!values || values.length !== 24) return [];
+  return values.map((levelMslM, hour) => ({ at: atIso(year, month, day, hour), levelMslM }));
+}
+
+function tomorrowParts(year: number, month: number, day: number) {
+  const anchor = new Date(Date.UTC(year, month - 1, day + 1, 5, 0, 0));
+  return bangkokParts(anchor);
+}
+
 function findHighPlateaus(points: TidePoint[]) {
   const result: Array<{ startAt: string; endAt: string; levelMslM: number }> = [];
   let i = 0;
@@ -39,8 +50,8 @@ function findHighPlateaus(points: TidePoint[]) {
 
 export function getBangkokPortTide(date = new Date()): TideSnapshot {
   const { year, month, day, hour } = bangkokParts(date);
-  const values = year === 2026 ? BANGKOK_PORT_2026_MSL[month]?.[day] : undefined;
-  if (!values || values.length !== 24) {
+  const today = pointsForDay(year, month, day);
+  if (!today.length) {
     return {
       ok: false,
       station: "ท่าเรือกรุงเทพ (Bangkok Port)",
@@ -56,9 +67,11 @@ export function getBangkokPortTide(date = new Date()): TideSnapshot {
     };
   }
 
-  const today = values.map((levelMslM, h) => ({ at: atIso(year, month, day, h), levelMslM }));
+  const next = tomorrowParts(year, month, day);
+  const tomorrow = pointsForDay(next.year, next.month, next.day);
+  const horizon = [...today, ...tomorrow];
   const nowMs = date.getTime();
-  const highs = findHighPlateaus(today);
+  const highs = findHighPlateaus(horizon);
   const nextHigh = highs.find((x) => new Date(x.endAt).getTime() >= nowMs) ?? null;
 
   return {
@@ -71,6 +84,6 @@ export function getBangkokPortTide(date = new Date()): TideSnapshot {
     nextHigh,
     today,
     sourceUrl: TIDE_SOURCE,
-    note: "ค่าทำนายรายชั่วโมง หน่วยเมตรเหนือระดับทะเลปานกลาง (MSL) — ไม่ใช่ค่าตรวจวัดสด",
+    note: "ค่าทำนายรายชั่วโมง หน่วยเมตรเหนือระดับทะเลปานกลาง (MSL) — ไม่ใช่ค่าตรวจวัดสด; รอบน้ำสูงถัดไปค้นต่อเนื่องถึงวันถัดไปเมื่อมีตารางข้อมูล",
   };
 }
