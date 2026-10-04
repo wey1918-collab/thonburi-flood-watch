@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const data = await getLiveOverview();
     return NextResponse.json(data, {
-      status: data.ok ? 200 : 502,
+      status: 200,
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
@@ -17,6 +17,7 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
+        degraded: true,
         generatedAt: new Date().toISOString(),
         errors: [error instanceof Error ? error.message : "Unknown error"],
       },

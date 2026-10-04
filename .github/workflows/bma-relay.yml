@@ -12,6 +12,7 @@ on:
       - "scripts/bma-relay.mjs"
       - "src/lib/bma/relay.ts"
       - "src/lib/overview/adapter.ts"
+      - "src/lib/thaiwater/**"
 
 permissions:
   contents: write
@@ -27,14 +28,14 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Fetch BMA data
         run: node scripts/bma-relay.mjs /tmp/bma-latest.json

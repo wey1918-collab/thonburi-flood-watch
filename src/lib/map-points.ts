@@ -17,6 +17,12 @@ function fmt(value: number | null, suffix: string) {
   return value == null ? "ไม่มีข้อมูล" : `${value.toFixed(value % 1 === 0 ? 0 : 2)} ${suffix}`;
 }
 
+function sourceLabel(status: string) {
+  if (/ThaiWater/.test(status)) return "ThaiWater/สสน. fallback";
+  if (/GitHub relay/.test(status)) return "GitHub relay";
+  return "BMA DDS";
+}
+
 export function buildFloodMapPoints(snapshot: BmaLiveSnapshot): FloodMapPoint[] {
   const rain = snapshot.rain
     .filter((s) => MAP_RAIN_CODES.has(s.code))
@@ -28,7 +34,7 @@ export function buildFloodMapPoints(snapshot: BmaLiveSnapshot): FloodMapPoint[] 
       latitude: s.latitude,
       status: s.severity,
       value: fmt(s.rain1h, "mm/1h"),
-      note: `BMA DDS • ${s.observedAtRaw || "ไม่พบเวลาอัปเดต"}`,
+      note: `${sourceLabel(s.sourceStatus)} • ${s.observedAtRaw || "ไม่พบเวลาอัปเดต"}`,
       kind: "RAIN" as const,
     }));
 
@@ -40,7 +46,7 @@ export function buildFloodMapPoints(snapshot: BmaLiveSnapshot): FloodMapPoint[] 
     latitude: s.latitude,
     status: s.severity,
     value: fmt(s.levelInside, "ม.รทก."),
-    note: `ด้านนอก ${fmt(s.levelOutside, "ม.รทก.")} • BMA DDS • ${s.observedAtRaw || "ไม่พบเวลาอัปเดต"}`,
+    note: `${sourceLabel(s.sourceStatus)} • ${s.observedAtRaw || "ไม่พบเวลาอัปเดต"}`,
     kind: "WATER" as const,
   }));
 
@@ -52,7 +58,7 @@ export function buildFloodMapPoints(snapshot: BmaLiveSnapshot): FloodMapPoint[] 
     latitude: s.latitude,
     status: s.severity,
     value: fmt(s.depthCm, "cm"),
-    note: `BMA DDS • ${s.observedAtRaw || "ไม่พบเวลาอัปเดต"}`,
+    note: `${sourceLabel(s.sourceStatus)} • ${s.observedAtRaw || "ไม่พบเวลาอัปเดต"}`,
     kind: "ROAD_FLOOD" as const,
   }));
 
