@@ -14,6 +14,8 @@ function decodeHtml(value: string) {
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>|<\/div>|<\/li>|<\/h\d>|<\/section>/gi, "\n")
     .replace(/<[^>]+>/g, " ")
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec: string) => String.fromCodePoint(Number.parseInt(dec, 10)))
     .replace(/&nbsp;|&#160;/gi, " ")
     .replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<")
@@ -49,10 +51,9 @@ function candidateUrls() {
 async function fetchHtml(url: string) {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; ThonburiFloodWatch/0.3; +https://thonburi-flood-watch.vercel.app)",
+      "User-Agent": "Mozilla/5.0 (compatible; ThonburiFloodWatch/0.4; +https://thonburi-flood-watch.vercel.app)",
       Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       "Accept-Language": "th-TH,th;q=0.9,en;q=0.7",
-      "Cache-Control": "no-cache",
     },
     signal: AbortSignal.timeout(20000),
     cache: "no-store",
@@ -72,9 +73,28 @@ function findBangkokSection(text: string) {
   if (!last || last.index == null) return null;
 
   let section = text.slice(last.index);
-  const end = section.search(/\nออกประกาศ|\nTags:|\nหมวดหมู่:/);
-  if (end > 0) section = section.slice(0, end);
+  const endMarkers = [
+    /\nภาคเหนือ/, /\nภาคตะวันออกเฉียงเหนือ/, /\nภาคกลาง/, /\nภาคตะวันออก/,
+    /\nภาคใต้/, /\nออกประกาศ/, /\nTags:/, /\nหมวดหมู่:/, /\nพยากรณ์อากาศ.*?(?:วัน|เวลา)/,
+  ];
+  const ends = endMarkers
+    .map((pattern) => section.search(pattern))
+    .filter((index) => index > 0);
+  if (ends.length) section = section.slice(0, Math.min(...ends));
   return section;
+}
+
+function compactSummary(section: string) {
+  const cleaned = section
+    .replace(/กรุงเทพ(?:มหานคร)?(?:ฯ)?\s*และปริมณฑล\s*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const boundary = cleaned.search(/(?:อุณหภูมิต่ำสุด|ลม\s|ทะเลมีคลื่น|ออกประกาศ)/);
+  const forecastOnly = boundary > 0 ? cleaned.slice(0, boundary).trim() : cleaned;
+  if (forecastOnly.length <= 240) return forecastOnly;
+  const sentence = forecastOnly.match(/^(.{60,240}?[.!?]|.{60,240}?\s(?:โดย|และมี|กับ))\s/);
+  return (sentence?.[1] || forecastOnly.slice(0, 237) + "…").trim();
 }
 
 function parse(url: string, html: string): TmdBangkokForecast | null {
@@ -92,11 +112,6 @@ function parse(url: string, html: string): TmdBangkokForecast | null {
     || text.match(/(\d{1,2}:\d{2}\s*น\.\s*วันนี้\s*-\s*\d{1,2}:\d{2}\s*น\.\s*วันพรุ่งนี้)/)?.[1]
     || "";
 
-  const summary = section
-    .replace(/กรุงเทพ(?:มหานคร)?(?:ฯ)?\s*และปริมณฑล\s*/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
   return {
     ok: true,
     sourceUrl: url,
@@ -109,7 +124,7 @@ function parse(url: string, html: string): TmdBangkokForecast | null {
     minTempC: temp ? Number(temp[1]) : null,
     maxTempC: temp ? Number(temp[4]) : null,
     windText: wind?.[0] || "",
-    summary: summary.slice(0, 520),
+    summary: compactSummary(section),
   };
 }
 
