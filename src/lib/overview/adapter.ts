@@ -9,16 +9,13 @@ import type { LiveOverview } from "./types";
 async function getBmaWithRelay(): Promise<BmaLiveSnapshot> {
   const relay = await getBmaRelaySnapshot();
 
-  // A fresh relay snapshot avoids direct BMA calls from Vercel, which are
-  // currently rejected/blocked by the upstream BMA network.
-  if (relay?.ok) return relay;
+  // The relay is refreshed outside Vercel. Use it whenever a snapshot exists,
+  // even when one category is explicitly stale/offline. This prevents every
+  // page request from waiting on BMA origins that currently reject cloud IPs.
+  if (relay) return relay;
 
-  const live = await getBmaLiveSnapshot();
-  if (live.ok) return live;
-
-  // A stale relay is still preferable to invented values. Its stations are
-  // explicitly marked OFFLINE/old by getBmaRelaySnapshot().
-  return relay ?? live;
+  // First-run/emergency fallback before the relay has ever published a file.
+  return getBmaLiveSnapshot();
 }
 
 export async function getLiveOverview(): Promise<LiveOverview> {
@@ -30,7 +27,7 @@ export async function getLiveOverview(): Promise<LiveOverview> {
   const tide = getBangkokPortTide();
   const errors: string[] = [];
 
-  if (!bma.ok) errors.push(...bma.errors.map((e) => `BMA: ${e}`));
+  if (!bma.ok) errors.push(...bma.errors.map((e) => `BMA/relay: ${e}`));
   if (!tmd.ok && tmd.error) errors.push(`TMD: ${tmd.error}`);
   if (!ridC29.ok && ridC29.error) errors.push(`RID: ${ridC29.error}`);
   if (!tide.ok && tide.error) errors.push(`Tide: ${tide.error}`);
