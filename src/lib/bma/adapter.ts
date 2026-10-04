@@ -1,0 +1,237 @@
+import { RAIN_STATIONS, ROAD_FLOOD_STATIONS, WATER_STATIONS } from "./stations";
+import type { BmaLiveSnapshot, RainStation, RoadFloodStation, Severity, WaterStation } from "./types";
+
+const SOURCES = {
+  rain: "https://weather.bangkok.go.th/rain",
+  water: "https://weather.bangkok.go.th/Water/",
+  roadFlood: "https://weather.bangkok.go.th/floodbangkok",
+} as const;
+
+function decodeHtml(value: string) {
+  return value
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractRows(html: string): string[][] {
+  const rows: string[][] = [];
+  const rowRegex = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+  const cellRegex = /<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi;
+  let rowMatch: RegExpExecArray | null;
+
+  while ((rowMatch = rowRegex.exec(html))) {
+    const cells: string[] = [];
+    let cellMatch: RegExpExecArray | null;
+    cellRegex.lastIndex = 0;
+    while ((cellMatch = cellRegex.exec(rowMatch[1]))) {
+      cells.push(decodeHtml(cellMatch[1]));
+    }
+    if (cells.length) rows.push(cells);
+  }
+  return rows;
+}
+
+function parseNumber(value?: string): number | null {
+  if (!value || value === "-" || value === "–") return null;
+  const cleaned = value.replace(/,/g, "").trim();
+  const n = Number(cleaned);
+  return Number.isFinite(n) ? n : null;
+}
+
+function parseThaiDateTime(value: string): string | null {
+  const match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})/);
+  if (!match) return null;
+  const [, dd, mm, rawYear, hh, min] = match;
+  const buddhistYear = Number(rawYear);
+  const year = buddhistYear >= 2400 ? buddhistYear - 543 : buddhistYear;
+  const iso = `${year}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}T${hh.padStart(2, "0")}:${min}:00+07:00`;
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function severityFromBmaStatus(status: string): Severity {
+  if (/ขัดข้อง|ปิดระบบ|ปรับปรุง/.test(status)) return "OFFLINE";
+  if (/วิกฤต|น้ำท่วม$/.test(status)) return "CRITICAL";
+  if (/เตือนภัย/.test(status)) return "WARNING";
+  if (/น้ำท่วมขังเล็กน้อย/.test(status)) return "WATCH";
+  if (/ปกติ/.test(status)) return "NORMAL";
+  return "UNKNOWN";
+}
+
+function rainfallSeverity(rain1h: number | null, sourceStatus: string): Severity {
+  const source = severityFromBmaStatus(sourceStatus);
+  if (source === "OFFLINE") return "OFFLINE";
+  if (rain1h == null) return "UNKNOWN";
+  // Uses BMA rainfall intensity bands shown on the public rain-monitoring page.
+  if (rain1h > 90) return "CRITICAL";
+  if (rain1h > 35) return "WARNING";
+  if (rain1h > 10) return "WATCH";
+  return "NORMAL";
+}
+
+async function fetchHtml(url: string) {
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": "ThonburiFloodWatch/0.2 (+community-dashboard)",
+      Accept: "text/html,application/xhtml+xml",
+      "Accept-Language": "th,en;q=0.8",
+    },
+    signal: AbortSignal.timeout(10000),
+  });
+
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.text();
+}
+
+function byCode(rows: string[][]) {
+  return new Map(rows.filter((row) => row[0]).map((row) => [row[0].trim(), row]));
+}
+
+function parseRain(html: string): RainStation[] {
+  const rows = byCode(extractRows(html));
+  return RAIN_STATIONS.map((meta) => {
+    const row = rows.get(meta.code);
+    if (!row) {
+      return {
+        ...meta,
+        kind: "RAIN" as const,
+        observedAt: null,
+        observedAtRaw: "",
+        sourceStatus: "ไม่พบข้อมูล",
+        rain5m: null, rain15m: null, rain30m: null, rain1h: null,
+        rain3h: null, rain6h: null, rain12h: null, rain24h: null,
+        severity: "UNKNOWN" as const,
+      };
+    }
+
+    const observedAtRaw = row[3] ?? "";
+    const sourceStatus = row[4] ?? "";
+    const rain1h = parseNumber(row[8]);
+    return {
+      ...meta,
+      name: row[2] || meta.name,
+      district: row[1] || meta.district,
+      kind: "RAIN" as const,
+      observedAt: parseThaiDateTime(observedAtRaw),
+      observedAtRaw,
+      sourceStatus,
+      rain5m: parseNumber(row[5]),
+      rain15m: parseNumber(row[6]),
+      rain30m: parseNumber(row[7]),
+      rain1h,
+      rain3h: parseNumber(row[9]),
+      rain6h: parseNumber(row[10]),
+      rain12h: parseNumber(row[11]),
+      rain24h: parseNumber(row[12]),
+      severity: rainfallSeverity(rain1h, sourceStatus),
+    };
+  });
+}
+
+function parseWater(html: string): WaterStation[] {
+  const rows = byCode(extractRows(html));
+  return WATER_STATIONS.map((meta) => {
+    const row = rows.get(meta.code);
+    if (!row) {
+      return {
+        ...meta,
+        kind: "WATER" as const,
+        observedAt: null,
+        observedAtRaw: "",
+        sourceStatus: "ไม่พบข้อมูล",
+        levelInside: null,
+        levelOutside: null,
+        riverLevel: null,
+        severity: "UNKNOWN" as const,
+      };
+    }
+
+    const observedAtRaw = row[3] ?? "";
+    const sourceStatus = row[4] ?? "";
+    return {
+      ...meta,
+      name: row[2] || meta.name,
+      district: row[1] || meta.district,
+      kind: "WATER" as const,
+      observedAt: parseThaiDateTime(observedAtRaw),
+      observedAtRaw,
+      sourceStatus,
+      levelInside: parseNumber(row[5]),
+      levelOutside: parseNumber(row[6]),
+      riverLevel: parseNumber(row[7]),
+      severity: severityFromBmaStatus(sourceStatus),
+    };
+  });
+}
+
+function parseRoadFlood(html: string): RoadFloodStation[] {
+  const rows = byCode(extractRows(html));
+  return ROAD_FLOOD_STATIONS.map((meta) => {
+    const row = rows.get(meta.code);
+    if (!row) {
+      return {
+        ...meta,
+        kind: "ROAD_FLOOD" as const,
+        observedAt: null,
+        observedAtRaw: "",
+        sourceStatus: "ไม่พบข้อมูล",
+        depthCm: null,
+        severity: "UNKNOWN" as const,
+      };
+    }
+
+    const observedAtRaw = row[3] ?? "";
+    const sourceStatus = row[5] ?? "";
+    return {
+      ...meta,
+      road: row[1] || meta.road,
+      name: row[2] || meta.name,
+      kind: "ROAD_FLOOD" as const,
+      observedAt: parseThaiDateTime(observedAtRaw),
+      observedAtRaw,
+      sourceStatus,
+      depthCm: parseNumber(row[4]),
+      severity: severityFromBmaStatus(sourceStatus),
+    };
+  });
+}
+
+export async function getBmaLiveSnapshot(): Promise<BmaLiveSnapshot> {
+  const errors: string[] = [];
+  const [rainResult, waterResult, roadResult] = await Promise.allSettled([
+    fetchHtml(SOURCES.rain),
+    fetchHtml(SOURCES.water),
+    fetchHtml(SOURCES.roadFlood),
+  ]);
+
+  let rain: RainStation[] = [];
+  let water: WaterStation[] = [];
+  let roadFlood: RoadFloodStation[] = [];
+
+  if (rainResult.status === "fulfilled") rain = parseRain(rainResult.value);
+  else errors.push(`BMA Rain: ${rainResult.reason instanceof Error ? rainResult.reason.message : "fetch failed"}`);
+
+  if (waterResult.status === "fulfilled") water = parseWater(waterResult.value);
+  else errors.push(`BMA Water: ${waterResult.reason instanceof Error ? waterResult.reason.message : "fetch failed"}`);
+
+  if (roadResult.status === "fulfilled") roadFlood = parseRoadFlood(roadResult.value);
+  else errors.push(`BMA Road Flood: ${roadResult.reason instanceof Error ? roadResult.reason.message : "fetch failed"}`);
+
+  return {
+    ok: errors.length === 0,
+    generatedAt: new Date().toISOString(),
+    rain,
+    water,
+    roadFlood,
+    errors,
+    sources: SOURCES,
+  };
+}
