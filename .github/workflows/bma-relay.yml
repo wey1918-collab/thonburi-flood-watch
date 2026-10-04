@@ -1,0 +1,67 @@
+name: BMA Data Relay
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/bma-relay.yml"
+      - "scripts/bma-relay.mjs"
+      - "src/lib/bma/relay.ts"
+      - "src/lib/overview/adapter.ts"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bma-data-relay
+  cancel-in-progress: true
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch BMA data
+        run: node scripts/bma-relay.mjs /tmp/bma-latest.json
+
+      - name: Publish relay snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "thonburi-flood-watch-bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          if git ls-remote --exit-code --heads origin bma-cache >/dev/null 2>&1; then
+            git fetch origin bma-cache:bma-cache
+            git switch bma-cache
+          else
+            git switch -c bma-cache
+          fi
+
+          mkdir -p data
+          cp /tmp/bma-latest.json data/bma-latest.json
+          git add data/bma-latest.json
+
+          if git diff --cached --quiet; then
+            echo "Relay snapshot unchanged."
+            exit 0
+          fi
+
+          git commit -m "chore(data): refresh BMA relay snapshot"
+          git push origin bma-cache
