@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import maplibregl, { Map as MapLibreMap, Marker } from "maplibre-gl";
+import {
+  Map as MapLibreMap,
+  Marker,
+  NavigationControl,
+  Popup,
+  ScaleControl,
+} from "maplibre-gl";
 import type { FloodMapPoint } from "@/lib/map-points";
 
 const statusColor: Record<string, string> = {
@@ -45,7 +51,7 @@ export default function FloodMap({ points }: { points: FloodMapPoint[] }) {
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
 
-    const map = new maplibregl.Map({
+    const map = new MapLibreMap({
       container: mapContainer.current,
       center: [100.481, 13.748],
       zoom: 12.4,
@@ -65,8 +71,8 @@ export default function FloodMap({ points }: { points: FloodMapPoint[] }) {
       },
     });
 
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
-    map.addControl(new maplibregl.ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-left");
+    map.addControl(new NavigationControl({ showCompass: false }), "top-right");
+    map.addControl(new ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-left");
     mapRef.current = map;
 
     return () => {
@@ -84,7 +90,7 @@ export default function FloodMap({ points }: { points: FloodMapPoint[] }) {
     markersRef.current = [];
 
     for (const point of points) {
-      const popup = new maplibregl.Popup({ offset: 18, closeButton: false }).setHTML(`
+      const popup = new Popup({ offset: 18, closeButton: false }).setHTML(`
         <div class="map-popup">
           <strong>${escapeHtml(point.name)}</strong>
           <span>${escapeHtml(point.subtitle)}</span>
@@ -95,7 +101,7 @@ export default function FloodMap({ points }: { points: FloodMapPoint[] }) {
         </div>
       `);
 
-      const marker = new maplibregl.Marker({ color: statusColor[point.status] ?? statusColor.UNKNOWN })
+      const marker = new Marker({ color: statusColor[point.status] ?? statusColor.UNKNOWN })
         .setLngLat([point.longitude, point.latitude])
         .setPopup(popup)
         .addTo(map);
