@@ -1,0 +1,7 @@
+# Security-sensitive files should stay under explicit maintainer review.
+* @wey1918-collab
+/.github/ @wey1918-collab
+/next.config.ts @wey1918-collab
+/vercel.json @wey1918-collab
+/package.json @wey1918-collab
+/scripts/ @wey1918-collab
