@@ -1,0 +1,82 @@
+name: Production Security Monitor
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    name: Check production security posture
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check homepage security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://thonburi-flood-watch.vercel.app/"
+          headers="$(curl -fsSIL --max-time 20 "$URL")"
+          printf '%s\n' "$headers"
+
+          check_header() {
+            local name="$1"
+            if ! printf '%s\n' "$headers" | grep -qi "^${name}:"; then
+              echo "Missing required security header: ${name}" >&2
+              exit 1
+            fi
+          }
+
+          check_header "content-security-policy"
+          check_header "strict-transport-security"
+          check_header "x-content-type-options"
+          check_header "x-frame-options"
+          check_header "referrer-policy"
+          check_header "permissions-policy"
+
+      - name: Check dashboard availability
+        shell: bash
+        run: |
+          set -euo pipefail
+          code="$(curl -sS -o /tmp/home.html -w '%{http_code}' --max-time 25 https://thonburi-flood-watch.vercel.app/)"
+          test "$code" = "200"
+          grep -qi "Thonburi Flood Watch" /tmp/home.html
+
+      - name: Check live overview API
+        shell: bash
+        run: |
+          set -euo pipefail
+          code="$(curl -sS -o /tmp/overview.json -w '%{http_code}' --max-time 30 https://thonburi-flood-watch.vercel.app/api/overview/live)"
+          test "$code" = "200"
+          node - <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('/tmp/overview.json', 'utf8'));
+          if (typeof data !== 'object' || data === null) throw new Error('Overview API did not return an object');
+          if (!('generatedAt' in data) && !('ok' in data)) throw new Error('Overview API shape is unexpected');
+          console.log('Overview API response parsed successfully.');
+          NODE
+
+      - name: Check API rejects unsafe methods
+        shell: bash
+        run: |
+          set -euo pipefail
+          code="$(curl -sS -o /tmp/post.out -w '%{http_code}' -X POST --max-time 20 https://thonburi-flood-watch.vercel.app/api/overview/live)"
+          case "$code" in
+            400|403|404|405) echo "Unsafe method rejected with HTTP $code" ;;
+            *) echo "Unexpected POST response: HTTP $code" >&2; exit 1 ;;
+          esac
+
+      - name: Check sensitive files are not web-accessible
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in '/.git/config' '/.env' '/package-lock.json'; do
+            code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "https://thonburi-flood-watch.vercel.app${path}")"
+            case "$code" in
+              401|403|404) echo "$path protected ($code)" ;;
+              *) echo "Sensitive path unexpectedly reachable: $path -> HTTP $code" >&2; exit 1 ;;
+            esac
+          done
