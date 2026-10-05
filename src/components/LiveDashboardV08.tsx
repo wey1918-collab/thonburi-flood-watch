@@ -8,6 +8,7 @@ import type { RoadFloodStation, Severity, WaterStation } from "@/lib/bma/types";
 import type { LiveOverview } from "@/lib/overview/types";
 
 type GaugeLevel = 0 | 1 | 2 | 3;
+type RoadGaugeLevel = 0 | 1 | 2 | 3 | 4 | 5;
 type HealthState = "LIVE" | "FALLBACK" | "STALE" | "OFFLINE" | "PREDICT";
 
 const severityRank: Record<Severity, number> = {
@@ -23,6 +24,8 @@ const ROAD_MONITORS = [
   { code: "MON.CHARAN", label: "ถนนจรัญสนิทวงศ์" },
   { code: "MON.BANGKRUI", label: "ถนนบางกรวย-ไทรน้อย" },
   { code: "MON.RATCHAPHRUEK", label: "ถนนราชพฤกษ์" },
+  { code: "FL.BKN.01", label: "ถนนอิสรภาพ ช่วงตลาดพรานนก" },
+  { code: "FL.BKN.02", label: "ถนนบรมราชชนนี ช่วงสายใต้" },
 ] as const;
 
 function fmt(value: number | null | undefined, unit: string, decimals = 1) {
@@ -82,6 +85,24 @@ function roadLevel(cm: number | null | undefined): GaugeLevel {
   if (cm < 10) return 2;
   return 3;
 }
+function roadFiveLevel(cm: number | null | undefined): RoadGaugeLevel {
+  if (cm == null) return 0;
+  if (cm < 5) return 1;
+  if (cm < 10) return 2;
+  if (cm < 15) return 3;
+  if (cm < 20) return 4;
+  return 5;
+}
+
+function roadFiveLevelLabel(level: RoadGaugeLevel, stale: boolean) {
+  if (stale) return "ข้อมูลเก่า • ไม่ใช้จัดระดับ";
+  if (level === 1) return "ระดับ 1 • ปกติ";
+  if (level === 2) return "ระดับ 2 • น้ำท่วมขังเล็กน้อย";
+  if (level === 3) return "ระดับ 3 • น้ำท่วม";
+  if (level === 4) return "ระดับ 4 • น้ำสูง";
+  if (level === 5) return "ระดับ 5 • รุนแรง";
+  return "ยังไม่มีข้อมูล";
+}
 
 function worstAvailable(values: Array<Severity | null | undefined>): Severity {
   const fresh = values.filter((value): value is Severity => Boolean(value && value !== "OFFLINE" && value !== "UNKNOWN"));
@@ -131,18 +152,21 @@ function Health({ name, state }: { name: string; state: HealthState }) {
 }
 
 function RoadMonitor({ road, label }: { road: RoadFloodStation | undefined; label: string }) {
-  const level = roadLevel(road?.depthCm);
-  const stale = road?.severity === "OFFLINE";
-  const shownLevel: GaugeLevel = stale ? 0 : level;
+  const stale = Boolean(road && (road.severity === "OFFLINE" || /ข้อมูลเก่า|stale|ขัดข้อง/i.test(road.sourceStatus)));
+  const calculatedLevel = roadFiveLevel(road?.depthCm);
+  const shownLevel: RoadGaugeLevel = stale ? 0 : calculatedLevel;
+  const segmentClass = (segment: 1 | 2 | 3 | 4 | 5) => `${shownLevel >= segment ? "active" : ""} ${shownLevel === segment ? "current" : ""}`.trim();
   return (
     <article className={`v08-road-card v08-level-${shownLevel}`}>
       <div className="v08-road-title"><span>🚗</span><strong>{label}</strong></div>
       <div className="v08-road-value">{road?.depthCm == null ? "—" : `${road.depthCm.toFixed(1)} cm`}</div>
-      <div className={`v08-level-label level-${shownLevel}`}>{levelLabel(shownLevel)}</div>
-      <div className="v08-road-scale">
-        <span className={shownLevel === 1 ? "active" : ""}>1<br/><small>&lt; 5 cm</small></span>
-        <span className={shownLevel === 2 ? "active" : ""}>2<br/><small>5–&lt;10 cm</small></span>
-        <span className={shownLevel === 3 ? "active" : ""}>3<br/><small>≥ 10 cm</small></span>
+      <div className={`v08-level-label level-${shownLevel}`}>{roadFiveLevelLabel(shownLevel, stale)}</div>
+      <div className="v08-road-scale" aria-label="มาตรวัดระดับน้ำท่วมถนนห้าระดับ">
+        <span className={segmentClass(1)}>1<br/><small>&lt; 5 cm</small></span>
+        <span className={segmentClass(2)}>2<br/><small>5–&lt;10</small></span>
+        <span className={segmentClass(3)}>3<br/><small>10–&lt;15</small></span>
+        <span className={segmentClass(4)}>4<br/><small>15–&lt;20</small></span>
+        <span className={segmentClass(5)}>5<br/><small>≥ 20 cm</small></span>
       </div>
       <p>{road ? `${road.sourceStatus} • ${road.observedAtRaw || displayTime(road.observedAt)}` : "กำลังรอข้อมูลจาก road monitor"}</p>
     </article>
@@ -240,7 +264,7 @@ export default function LiveDashboardV08() {
     <div className="dashboard-v08">
       <header className="v08-header">
         <div>
-          <span className="section-kicker">BANGKOK • MULTI-SOURCE FLOOD DASHBOARD V0.8</span>
+          <span className="section-kicker">BANGKOK • MULTI-SOURCE FLOOD DASHBOARD V0.9</span>
           <h1>Thonburi Flood Watch</h1>
           <p>บางกอกน้อย • ธนบุรี • บางกอกใหญ่ • แนวถนนเชื่อมบางกรวย</p>
         </div>
@@ -268,16 +292,17 @@ export default function LiveDashboardV08() {
         <div className="v08-gauge-grid">
           <TriGauge icon="🌧️" title="ฝน 1 ชั่วโมง" value={fmt(rainMm, "mm", 1)} level={currentRainLevel} bands={["≤ 10 mm", ">10–35 mm", "> 35 mm"]} source={rainStation && !sourceIsThaiWater(rainStation.sourceStatus) ? "BMA" : "ThaiWater"} note={rainStation ? `${rainStation.name} • ${rainStation.observedAtRaw || displayTime(rainStation.observedAt)}` : thaiWater?.rain ? `${thaiWater.rain.stationName} • ${thaiWater.rain.observedAtRaw || displayTime(thaiWater.rain.observedAt)}` : "ไม่มีข้อมูลฝนสด"} />
           <TriGauge icon="💧" title="ระดับน้ำใกล้พื้นที่" value={fmt(waterValue, waterUnit, 2)} level={waterLevel} bands={["สถานะ 1 ปกติ", "สถานะ 2 เฝ้าระวัง", "สถานะ 3+ เตือน"]} source={primaryWater && !sourceIsThaiWater(primaryWater.sourceStatus) ? "BMA" : "ThaiWater"} note={primaryWater ? `${primaryWater.name} • ${primaryWater.sourceStatus}` : "ใช้สถานะระดับน้ำจากต้นทาง ไม่ตั้งค่า m ตายตัวเอง"} />
-          <TriGauge icon="🚗" title="น้ำบนถนน • สูงสุด 3 เส้นทาง" value={fmt(maxRoadDepth, "cm", 1)} level={currentRoadLevel} bands={["< 5 cm", "5–<10 cm", "≥ 10 cm"]} source="ROAD MONITOR" note="จรัญสนิทวงศ์ • บางกรวย-ไทรน้อย • ราชพฤกษ์" />
+          <TriGauge icon="🚗" title="น้ำบนถนน • สูงสุด 5 เส้นทาง" value={fmt(maxRoadDepth, "cm", 1)} level={currentRoadLevel} bands={["< 5 cm", "5–<10 cm", "≥ 10 cm"]} source="ROAD MONITOR" note="จรัญสนิทวงศ์ • บางกรวย-ไทรน้อย • ราชพฤกษ์ • อิสรภาพ • บรมราชชนนี" />
         </div>
         <p className="v08-threshold-note">เกณฑ์ฝนย่อจากช่วงที่ BMA แสดง (10 และ 35 มม.) และเกณฑ์ถนนใช้ 5 ซม. = เริ่มน้ำท่วมขังเล็กน้อย, 10 ซม. = น้ำท่วม; ส่วนระดับน้ำคลองใช้สถานะจากต้นทาง เพราะแต่ละสถานีมี datum/ตลิ่งต่างกัน</p>
       </section>
 
       <section className="v08-section">
-        <div className="v08-section-head"><div><span className="section-kicker">ROAD WATCH</span><h2>เฝ้าระวัง 3 ถนนที่เพิ่มใหม่</h2></div><small>ค่าจริงถ้ามีเซนเซอร์ตรงถนน; หากไม่มีจะแสดงสถานีใกล้เคียงชัดเจน</small></div>
+        <div className="v08-section-head"><div><span className="section-kicker">ROAD 5-LEVEL DASHBOARD</span><h2>ถนน 5 เส้น • Dashboard 5 ระดับ</h2></div><small>ตัวเลขจริง + ระดับ 1–5; ข้อมูลเก่าจะไม่ถูกตีความว่าเป็นระดับ 1</small></div>
         <div className="v08-road-grid">
           {requestedRoads.map((item) => <RoadMonitor key={item.code} road={item.road} label={item.label} />)}
         </div>
+        <p className="v08-threshold-note">BMA ระบุเกณฑ์หลักของน้ำท่วมถนนที่ 5 ซม. = น้ำท่วมขังเล็กน้อย และ 10 ซม. = น้ำท่วม ส่วนระดับ 3–5 ในแดชบอร์ดนี้แบ่งช่วง 10–&lt;15, 15–&lt;20 และ ≥20 ซม. เพื่อให้อ่านความรุนแรงได้ละเอียดขึ้น ไม่ใช่ระดับประกาศทางการของ BMA</p>
       </section>
 
       <section className="v08-section">
@@ -298,11 +323,11 @@ export default function LiveDashboardV08() {
       <section className="v08-section v08-map-card">
         <div className="v08-section-head"><div><span className="section-kicker">MAP</span><h2>แผนที่สถานการณ์และจุด Road Monitor</h2></div><span className="live-chip">MULTI-SOURCE</span></div>
         <FloodMap points={mapPoints} />
-        <p className="v08-threshold-note">หมุด MON.CHARAN / MON.BANGKRUI / MON.RATCHAPHRUEK คือจุด monitor ของถนนที่เพิ่มใหม่ หากต้นทางไม่มีเซนเซอร์ตรงชื่อถนน ระบบจะใช้เฉพาะเซนเซอร์ใกล้เคียงภายในระยะที่กำหนดและระบุว่า “สถานีใกล้เคียง” ไม่ถือว่าเป็นค่าของถนนนั้นโดยตรง</p>
+        <p className="v08-threshold-note">หมุด Road Monitor ครอบคลุมจรัญสนิทวงศ์ บางกรวย-ไทรน้อย ราชพฤกษ์ อิสรภาพ และบรมราชชนนี หากต้นทางไม่มีเซนเซอร์ตรงชื่อถนน ระบบจะใช้เฉพาะเซนเซอร์ใกล้เคียงภายในระยะที่กำหนดและระบุว่า “สถานีใกล้เคียง” ไม่ถือว่าเป็นค่าของถนนนั้นโดยตรง</p>
       </section>
 
       <details className="detail-disclosure v08-details">
-        <summary><span>ถนนและสถานีทั้งหมด</span><small>{bma?.roadFlood.length ?? 0} จุด</small></summary>
+        <summary><span>ถนน 5 เส้นและสถานีทั้งหมด</span><small>{bma?.roadFlood.length ?? 0} จุด</small></summary>
         <div className="road-list compact-road-list">
           {(bma?.roadFlood ?? []).map((road) => <div className="road-row" key={road.code}><div><strong>{road.name}</strong><span>{road.code} • {road.sourceStatus} • {road.observedAtRaw || "ไม่มีเวลาอัปเดต"}</span></div><b>{road.depthCm == null ? "—" : `${road.depthCm.toFixed(1)} cm`}</b></div>)}
         </div>
