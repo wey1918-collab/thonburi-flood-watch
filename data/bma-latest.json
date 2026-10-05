@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-05T08:42:46.518Z",
+  "generatedAt": "2026-10-05T08:47:53.349Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -187,6 +187,48 @@
   ],
   "roadFlood": [
     {
+      "code": "MON.CHARAN",
+      "name": "ถนนจรัญสนิทวงศ์",
+      "road": "ถนนจรัญสนิทวงศ์",
+      "district": "บางกอกน้อย",
+      "latitude": 13.7547,
+      "longitude": 100.4781,
+      "kind": "ROAD_FLOOD",
+      "observedAt": "2026-10-04T04:55:00.000Z",
+      "observedAtRaw": "2026-10-04 11:55",
+      "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 1.1 กม. • ถ.อิสรภาพ ช่วงตลาดพรานนก (FL.BKN.01) • ข้อมูลเก่า",
+      "depthCm": 0,
+      "severity": "OFFLINE"
+    },
+    {
+      "code": "MON.BANGKRUI",
+      "name": "ถนนบางกรวย-ไทรน้อย",
+      "road": "ถนนบางกรวย-ไทรน้อย",
+      "district": "บางกรวย นนทบุรี",
+      "latitude": 13.78459,
+      "longitude": 100.49451,
+      "kind": "ROAD_FLOOD",
+      "observedAt": "2026-10-04T04:55:00.000Z",
+      "observedAtRaw": "2026-10-04 11:55",
+      "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 2.2 กม. • อ.บางพลัด(ขาเข้า) (TN.BPD.01(IN)) • ข้อมูลเก่า",
+      "depthCm": 0,
+      "severity": "OFFLINE"
+    },
+    {
+      "code": "MON.RATCHAPHRUEK",
+      "name": "ถนนราชพฤกษ์",
+      "road": "ถนนราชพฤกษ์",
+      "district": "ตลิ่งชัน/บางกรวย",
+      "latitude": 13.78269,
+      "longitude": 100.4335,
+      "kind": "ROAD_FLOOD",
+      "observedAt": "2026-10-04T04:55:00.000Z",
+      "observedAtRaw": "2026-10-04 11:55",
+      "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 1.2 กม. • ถ.ฉิมพลี ช่วง ซ.ฉิมพลี 31 * (FL.TLC.01) • ข้อมูลเก่า",
+      "depthCm": 0,
+      "severity": "OFFLINE"
+    },
+    {
       "code": "FL.BKN.01",
       "name": "ถ.อิสรภาพ ช่วงตลาดพรานนก",
       "road": "ถ.อิสรภาพ ช่วงตลาดพรานนก",
@@ -216,7 +258,7 @@
     }
   ],
   "errors": [
-    "Road Flood: 2 จุดไม่มีข้อมูลสด"
+    "Road Flood: 5 จุดไม่มีข้อมูลสด"
   ],
   "sources": {
     "rain": "https://api-v3.thaiwater.net/api/v1/thaiwater30/public/rain_24h?province_code=10",
