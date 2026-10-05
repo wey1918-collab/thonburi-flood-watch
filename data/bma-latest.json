@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-05T16:42:39.696Z",
+  "generatedAt": "2026-10-05T16:56:19.226Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -131,12 +131,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-05T16:30:00.000Z",
-      "observedAtRaw": "2026-10-05 23:30",
+      "observedAt": "2026-10-05T16:40:00.000Z",
+      "observedAtRaw": "2026-10-05 23:40",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 5.3 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.1,
+      "levelInside": 1.09,
       "levelOutside": null,
-      "riverLevel": 1.1,
+      "riverLevel": 1.09,
       "severity": "CRITICAL"
     },
     {
@@ -146,12 +146,12 @@
       "latitude": 13.78815,
       "longitude": 100.509148,
       "kind": "WATER",
-      "observedAt": "2026-10-05T15:00:00.000Z",
-      "observedAtRaw": "2026-10-05 22:00",
+      "observedAt": "2026-10-05T16:00:00.000Z",
+      "observedAtRaw": "2026-10-05 23:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 3.7 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.83,
+      "levelInside": 1.78,
       "levelOutside": null,
-      "riverLevel": 1.83,
+      "riverLevel": 1.78,
       "severity": "CRITICAL"
     },
     {
@@ -161,12 +161,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-05T16:30:00.000Z",
-      "observedAtRaw": "2026-10-05 23:30",
+      "observedAt": "2026-10-05T16:40:00.000Z",
+      "observedAtRaw": "2026-10-05 23:40",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.4 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.1,
+      "levelInside": 1.09,
       "levelOutside": null,
-      "riverLevel": 1.1,
+      "riverLevel": 1.09,
       "severity": "CRITICAL"
     },
     {
@@ -176,12 +176,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-05T16:30:00.000Z",
-      "observedAtRaw": "2026-10-05 23:30",
+      "observedAt": "2026-10-05T16:40:00.000Z",
+      "observedAtRaw": "2026-10-05 23:40",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.1,
+      "levelInside": 1.09,
       "levelOutside": null,
-      "riverLevel": 1.1,
+      "riverLevel": 1.09,
       "severity": "CRITICAL"
     }
   ],
