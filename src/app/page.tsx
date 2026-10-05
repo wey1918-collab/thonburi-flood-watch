@@ -5,7 +5,7 @@ export default function Home() {
     <main className="page-shell">
       <LiveDashboard />
       <footer>
-        Community dashboard • BMA DDS + TMD + RID C.29 + Hydrographic Department tide prediction • ควรตรวจประกาศทางการประกอบก่อนตัดสินใจด้านความปลอดภัย
+        Community flood dashboard • BMA DDS + ThaiWater/สสน. + TMD + RID C.29 + GISTDA + Hydrographic Department tide prediction • ใช้เพื่อเฝ้าระวังและควรตรวจประกาศทางการก่อนตัดสินใจด้านความปลอดภัย
       </footer>
     </main>
   );
