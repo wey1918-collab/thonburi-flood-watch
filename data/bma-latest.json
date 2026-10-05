@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-05T21:41:54.211Z",
+  "generatedAt": "2026-10-05T21:54:36.084Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -24,43 +24,43 @@
     },
     {
       "code": "RF.BKN.02",
-      "name": "สะพานกรุงเทพ (CPY015)",
+      "name": "สะพานพระพุทธยอดฟ้า (G09006-TA100220)",
       "district": "บางกอกน้อย",
-      "latitude": 13.700301,
-      "longitude": 100.49277,
+      "latitude": 13.738694,
+      "longitude": 100.49633,
       "kind": "RAIN",
       "observedAt": "2026-10-05T21:00:00.000Z",
       "observedAtRaw": "2026-10-06 04:00",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 5.3 กม.",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 1.5 กม.",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
-      "rain1h": 0,
+      "rain1h": 12.5,
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 0,
-      "severity": "NORMAL"
+      "rain24h": 23,
+      "severity": "WATCH"
     },
     {
       "code": "RF.TBR.01",
-      "name": "สะพานกรุงเทพ (CPY015)",
+      "name": "สะพานพระพุทธยอดฟ้า (G09006-TA100220)",
       "district": "ธนบุรี",
-      "latitude": 13.700301,
-      "longitude": 100.49277,
+      "latitude": 13.738694,
+      "longitude": 100.49633,
       "kind": "RAIN",
       "observedAt": "2026-10-05T21:00:00.000Z",
       "observedAtRaw": "2026-10-06 04:00",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 2.9 กม.",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 1.9 กม.",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
-      "rain1h": 0,
+      "rain1h": 12.5,
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 0,
-      "severity": "NORMAL"
+      "rain24h": 23,
+      "severity": "WATCH"
     },
     {
       "code": "RF.TBR.02",
@@ -84,43 +84,43 @@
     },
     {
       "code": "RF.BKY.01",
-      "name": "สะพานกรุงเทพ (CPY015)",
+      "name": "สะพานพระพุทธยอดฟ้า (G09006-TA100220)",
       "district": "บางกอกใหญ่",
-      "latitude": 13.700301,
-      "longitude": 100.49277,
+      "latitude": 13.738694,
+      "longitude": 100.49633,
       "kind": "RAIN",
       "observedAt": "2026-10-05T21:00:00.000Z",
       "observedAtRaw": "2026-10-06 04:00",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 3.1 กม.",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 2.8 กม.",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
-      "rain1h": 0,
+      "rain1h": 12.5,
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 0,
-      "severity": "NORMAL"
+      "rain24h": 23,
+      "severity": "WATCH"
     },
     {
       "code": "RF.BKY.02",
-      "name": "สะพานกรุงเทพ (CPY015)",
+      "name": "สะพานพระพุทธยอดฟ้า (G09006-TA100220)",
       "district": "บางกอกใหญ่",
-      "latitude": 13.700301,
-      "longitude": 100.49277,
+      "latitude": 13.738694,
+      "longitude": 100.49633,
       "kind": "RAIN",
       "observedAt": "2026-10-05T21:00:00.000Z",
       "observedAtRaw": "2026-10-06 04:00",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.4 กม.",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.7 กม.",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
-      "rain1h": 0,
+      "rain1h": 12.5,
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 0,
-      "severity": "NORMAL"
+      "rain24h": 23,
+      "severity": "WATCH"
     }
   ],
   "water": [
@@ -133,11 +133,11 @@
       "kind": "WATER",
       "observedAt": "2026-10-05T18:50:00.000Z",
       "observedAtRaw": "2026-10-06 01:50",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 5.3 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 5.3 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
       "levelInside": 0.82,
       "levelOutside": null,
       "riverLevel": 0.82,
-      "severity": "CRITICAL"
+      "severity": "OFFLINE"
     },
     {
       "code": "WL.BBR.01",
@@ -146,12 +146,12 @@
       "latitude": 13.78815,
       "longitude": 100.509148,
       "kind": "WATER",
-      "observedAt": "2026-10-05T20:00:00.000Z",
-      "observedAtRaw": "2026-10-06 03:00",
+      "observedAt": "2026-10-05T21:00:00.000Z",
+      "observedAtRaw": "2026-10-06 04:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 3.7 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.53,
+      "levelInside": 1.49,
       "levelOutside": null,
-      "riverLevel": 1.53,
+      "riverLevel": 1.49,
       "severity": "CRITICAL"
     },
     {
@@ -163,11 +163,11 @@
       "kind": "WATER",
       "observedAt": "2026-10-05T18:50:00.000Z",
       "observedAtRaw": "2026-10-06 01:50",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.4 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.4 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
       "levelInside": 0.82,
       "levelOutside": null,
       "riverLevel": 0.82,
-      "severity": "CRITICAL"
+      "severity": "OFFLINE"
     },
     {
       "code": "WL.SRE.01",
@@ -178,11 +178,11 @@
       "kind": "WATER",
       "observedAt": "2026-10-05T18:50:00.000Z",
       "observedAtRaw": "2026-10-06 01:50",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
       "levelInside": 0.82,
       "levelOutside": null,
       "riverLevel": 0.82,
-      "severity": "CRITICAL"
+      "severity": "OFFLINE"
     }
   ],
   "roadFlood": [
@@ -258,6 +258,7 @@
     }
   ],
   "errors": [
+    "Water: 3 จุดไม่มีข้อมูลสด",
     "Road Flood: 5 จุดไม่มีข้อมูลสด"
   ],
   "sources": {
