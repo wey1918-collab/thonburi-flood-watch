@@ -10,6 +10,7 @@ on:
     paths:
       - ".github/workflows/bma-relay.yml"
       - "scripts/bma-relay.mjs"
+      - "scripts/road-monitor-enrich.mjs"
       - "src/lib/bma/relay.ts"
       - "src/lib/overview/adapter.ts"
       - "src/lib/thaiwater/**"
@@ -37,8 +38,11 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Fetch BMA data
+      - name: Fetch BMA and ThaiWater base data
         run: node scripts/bma-relay.mjs /tmp/bma-latest.json
+
+      - name: Enrich requested road monitors
+        run: node scripts/road-monitor-enrich.mjs /tmp/bma-latest.json
 
       - name: Publish relay snapshot
         shell: bash

@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
+import "./dashboard-v08.css";
 
 export const metadata: Metadata = {
   title: "Thonburi Flood Watch",
-  description: "ต้นแบบแดชบอร์ดเฝ้าระวังน้ำท่วมบางกอกน้อยและฝั่งธนบุรี",
+  description: "แดชบอร์ดเฝ้าระวังน้ำท่วมบางกอกน้อย ฝั่งธนบุรี และแนวถนนเชื่อมบางกรวย",
   applicationName: "Thonburi Flood Watch",
   manifest: "/manifest.webmanifest"
 };

@@ -1,0 +1,97 @@
+/* V0.8 three-level dashboard */
+.dashboard-v08 { display: grid; gap: 12px; }
+.v08-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 4px 0 2px; }
+.v08-header h1 { margin: 5px 0 3px; }
+.v08-header p { font-size: 12px; }
+.v08-summary {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  padding: 18px; border: 1px solid var(--line); border-radius: 20px;
+  background: linear-gradient(145deg, rgba(22,49,74,.92), rgba(10,25,41,.95));
+  position: relative; overflow: hidden;
+}
+.v08-summary::before { content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--offline); }
+.v08-summary-1::before { background:var(--good); }
+.v08-summary-2::before { background:var(--watch); }
+.v08-summary-3::before { background:var(--warn); }
+.v08-summary > div { min-width:0; }
+.v08-summary > div > span { color:#8fa9bf; font-size:10px; font-weight:900; letter-spacing:.08em; }
+.v08-summary h2 { margin-top:5px; font-size:clamp(20px,4vw,30px); }
+.v08-summary p { margin-top:7px; font-size:11px; line-height:1.55; }
+
+.v08-health-strip { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:7px; }
+.v08-health { min-width:0; display:flex; align-items:center; gap:6px; padding:8px 9px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.025); font-size:9px; color:#9fb1c3; }
+.v08-health i { width:7px; height:7px; flex:0 0 auto; border-radius:50%; background:var(--offline); }
+.v08-health b { margin-left:auto; font-size:8px; letter-spacing:.05em; }
+.v08-health.health-live i { background:var(--good); }
+.v08-health.health-fallback i { background:var(--watch); }
+.v08-health.health-stale i,.v08-health.health-offline i { background:var(--offline); }
+.v08-health.health-predict i { background:var(--info); }
+
+.v08-section { border:1px solid var(--line); border-radius:18px; padding:15px; background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.012)); }
+.v08-section-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.v08-section-head h2 { margin-top:1px; }
+.v08-section-head > small { color:var(--muted-2); font-size:10px; text-align:right; max-width:360px; line-height:1.45; }
+
+.v08-gauge-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.v08-gauge-card,.v08-road-card { position:relative; overflow:hidden; border:1px solid var(--line); border-radius:16px; padding:14px; background:linear-gradient(155deg,rgba(17,38,60,.92),rgba(12,27,44,.95)); }
+.v08-gauge-card::before,.v08-road-card::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--offline); }
+.v08-level-1::before { background:var(--good); }
+.v08-level-2::before { background:var(--watch); }
+.v08-level-3::before { background:var(--warn); }
+.v08-gauge-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.v08-gauge-icon { width:31px; height:31px; display:grid; place-items:center; border-radius:10px; background:rgba(255,255,255,.055); }
+.v08-source-chip { border:1px solid var(--line); border-radius:999px; padding:4px 7px; color:#8da5bb; font-size:8px; font-weight:900; letter-spacing:.05em; }
+.v08-gauge-card h3 { margin:11px 0 0; color:#aabccd; font-size:12px; }
+.v08-gauge-value { margin-top:4px; font-size:clamp(26px,5vw,38px); font-weight:950; letter-spacing:-.04em; }
+.v08-level-label { width:fit-content; margin-top:8px; border-radius:999px; padding:5px 8px; font-size:9px; font-weight:900; color:#cad4df; background:rgba(157,176,198,.12); }
+.v08-level-label.level-1 { color:#97efaf; background:rgba(82,210,115,.12); }
+.v08-level-label.level-2 { color:#ffdc78; background:rgba(246,195,68,.12); }
+.v08-level-label.level-3 { color:#ffb07b; background:rgba(255,145,77,.14); }
+.v08-three-level { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; margin-top:12px; }
+.v08-segment { min-width:0; display:grid; gap:3px; padding:8px 6px; border-radius:10px; border:1px solid rgba(255,255,255,.055); background:rgba(255,255,255,.025); opacity:.55; }
+.v08-segment b { font-size:12px; }
+.v08-segment span { color:var(--muted-2); font-size:8px; line-height:1.3; }
+.v08-segment.seg-1 { box-shadow:inset 0 -2px 0 rgba(82,210,115,.6); }
+.v08-segment.seg-2 { box-shadow:inset 0 -2px 0 rgba(246,195,68,.65); }
+.v08-segment.seg-3 { box-shadow:inset 0 -2px 0 rgba(255,145,77,.7); }
+.v08-segment.active { opacity:1; transform:translateY(-1px); background:rgba(255,255,255,.055); border-color:rgba(255,255,255,.13); }
+.v08-gauge-card > p,.v08-road-card > p { margin-top:10px; color:var(--muted-2); font-size:9px; line-height:1.5; }
+.v08-threshold-note { margin-top:11px; padding:9px 10px; border-radius:11px; background:rgba(93,177,255,.055); border:1px solid rgba(93,177,255,.12); color:#8fa7bd; font-size:9px; line-height:1.55; }
+
+.v08-road-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.v08-road-title { display:flex; align-items:center; gap:8px; }
+.v08-road-title strong { font-size:12px; }
+.v08-road-value { margin-top:12px; font-size:31px; font-weight:950; letter-spacing:-.035em; }
+.v08-road-scale { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; margin-top:10px; }
+.v08-road-scale > span { text-align:center; padding:7px 4px; border-radius:9px; border:1px solid var(--line); background:rgba(255,255,255,.025); font-size:10px; opacity:.5; }
+.v08-road-scale > span:nth-child(1) { box-shadow:inset 0 -2px 0 rgba(82,210,115,.6); }
+.v08-road-scale > span:nth-child(2) { box-shadow:inset 0 -2px 0 rgba(246,195,68,.65); }
+.v08-road-scale > span:nth-child(3) { box-shadow:inset 0 -2px 0 rgba(255,145,77,.7); }
+.v08-road-scale > span.active { opacity:1; background:rgba(255,255,255,.06); }
+.v08-road-scale small { color:var(--muted-2); font-size:8px; }
+
+.v08-context-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.v08-context-grid article { min-width:0; padding:13px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.022); display:grid; gap:5px; }
+.v08-context-grid span { color:var(--muted); font-size:9px; font-weight:850; }
+.v08-context-grid strong { font-size:22px; letter-spacing:-.025em; }
+.v08-context-grid p { color:var(--muted-2); font-size:9px; line-height:1.4; }
+.v08-map-card { display:grid; gap:10px; }
+.v08-details { background:rgba(255,255,255,.015); }
+
+@media (max-width: 920px) {
+  .v08-health-strip { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .v08-context-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+  .v08-header { flex-direction:column; }
+  .v08-summary { flex-direction:column; }
+  .v08-gauge-grid,.v08-road-grid { grid-template-columns:1fr; }
+  .v08-section-head { flex-direction:column; }
+  .v08-section-head > small { text-align:left; max-width:none; }
+  .v08-context-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 430px) {
+  .v08-health-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .v08-context-grid { grid-template-columns:1fr; }
+  .v08-gauge-value,.v08-road-value { font-size:28px; }
+}

@@ -1,11 +1,11 @@
-import LiveDashboard from "@/components/LiveDashboard";
+import LiveDashboardV08 from "@/components/LiveDashboardV08";
 
 export default function Home() {
   return (
     <main className="page-shell">
-      <LiveDashboard />
+      <LiveDashboardV08 />
       <footer>
-        Community flood dashboard • BMA DDS + ThaiWater/สสน. + TMD + RID C.29 + GISTDA + Hydrographic Department tide prediction • ใช้เพื่อเฝ้าระวังและควรตรวจประกาศทางการก่อนตัดสินใจด้านความปลอดภัย
+        Community dashboard • BMA DDS + ThaiWater/สสน. + TMD + RID + GISTDA + Hydrographic tide prediction • Road Monitor: จรัญสนิทวงศ์, บางกรวย-ไทรน้อย, ราชพฤกษ์ • ควรตรวจประกาศทางการประกอบก่อนตัดสินใจด้านความปลอดภัย
       </footer>
     </main>
   );
