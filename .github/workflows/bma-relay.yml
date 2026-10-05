@@ -15,9 +15,6 @@ on:
       - "src/lib/overview/adapter.ts"
       - "src/lib/thaiwater/**"
 
-permissions:
-  contents: write
-
 concurrency:
   group: bma-data-relay
   cancel-in-progress: true
@@ -26,15 +23,18 @@ jobs:
   relay:
     runs-on: ubuntu-latest
     timeout-minutes: 4
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v5
+      - name: Checkout source without persisted credentials
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Use Node.js
-        uses: actions/setup-node@v5
+      - name: Use Node.js 24
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "24"
 
@@ -44,8 +44,26 @@ jobs:
       - name: Enrich requested road monitors
         run: node scripts/road-monitor-enrich.mjs /tmp/bma-latest.json
 
+      - name: Validate relay snapshot before publish
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const p = '/tmp/bma-latest.json';
+          const stat = fs.statSync(p);
+          if (stat.size < 2 || stat.size > 2_000_000) throw new Error(`Unexpected relay size: ${stat.size}`);
+          const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+          for (const key of ['rain', 'water', 'roadFlood']) {
+            if (!Array.isArray(data[key])) throw new Error(`Missing array: ${key}`);
+            if (data[key].length > 5000) throw new Error(`Too many records in ${key}`);
+          }
+          if (typeof data.generatedAt !== 'string') throw new Error('Missing generatedAt');
+          console.log('Relay snapshot schema/size validation passed.');
+          NODE
+
       - name: Publish relay snapshot
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -69,4 +87,5 @@ jobs:
           fi
 
           git commit -m "chore(data): refresh BMA relay snapshot"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push origin bma-cache
