@@ -6,7 +6,10 @@ on:
     paths:
       - ".github/workflows/security-monitor.yml"
       - "next.config.ts"
+      - "src/proxy.ts"
+      - "src/app/layout.tsx"
       - "src/app/api/**"
+      - "src/lib/security/**"
   schedule:
     - cron: "17 * * * *"
   workflow_dispatch:
@@ -23,7 +26,7 @@ jobs:
       - name: Wait for production deployment
         run: sleep 45
 
-      - name: Check homepage security headers
+      - name: Check homepage security headers and nonce CSP
         shell: bash
         run: |
           set -euo pipefail
@@ -46,6 +49,13 @@ jobs:
           check_header "referrer-policy"
           check_header "permissions-policy"
 
+          csp="$(printf '%s\n' "$headers" | sed -n 's/^content-security-policy:[[:space:]]*//Ip' | tail -1 | tr -d '\r')"
+          printf '%s\n' "$csp" | grep -Eq "script-src[^;]*'nonce-[^']+'"
+          if printf '%s\n' "$csp" | grep -Eq "script-src[^;]*'unsafe-inline'"; then
+            echo "script-src still permits unsafe-inline" >&2
+            exit 1
+          fi
+
       - name: Check dashboard availability
         shell: bash
         run: |
@@ -58,8 +68,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          code="$(curl -sS -o /tmp/overview.json -w '%{http_code}' --max-time 30 https://thonburi-flood-watch.vercel.app/api/overview/live)"
+          code="$(curl -sS -D /tmp/api.headers -o /tmp/overview.json -w '%{http_code}' --max-time 30 https://thonburi-flood-watch.vercel.app/api/overview/live)"
           test "$code" = "200"
+          grep -qi "^content-security-policy:.*default-src 'none'" /tmp/api.headers
           node - <<'NODE'
           const fs = require('fs');
           const data = JSON.parse(fs.readFileSync('/tmp/overview.json', 'utf8'));
@@ -67,6 +78,13 @@ jobs:
           if (!('generatedAt' in data) && !('ok' in data)) throw new Error('Overview API shape is unexpected');
           console.log('Overview API response parsed successfully.');
           NODE
+
+      - name: Check cross-site browser API requests are blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          code="$(curl -sS -o /tmp/cross-site.out -w '%{http_code}' -H 'Sec-Fetch-Site: cross-site' --max-time 20 https://thonburi-flood-watch.vercel.app/api/overview/live)"
+          test "$code" = "403"
 
       - name: Check API rejects unsafe methods
         shell: bash
