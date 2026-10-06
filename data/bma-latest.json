@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-06T06:55:32.967Z",
+  "generatedAt": "2026-10-06T07:06:53.832Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -11,7 +11,7 @@
       "kind": "RAIN",
       "observedAt": "2026-10-06T04:00:00.000Z",
       "observedAtRaw": "2026-10-06 11:00",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.5 กม.",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.5 กม. • ข้อมูลเก่า",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
@@ -20,7 +20,7 @@
       "rain6h": null,
       "rain12h": null,
       "rain24h": 14.6,
-      "severity": "NORMAL"
+      "severity": "OFFLINE"
     },
     {
       "code": "RF.BKN.02",
@@ -71,7 +71,7 @@
       "kind": "RAIN",
       "observedAt": "2026-10-06T04:00:00.000Z",
       "observedAtRaw": "2026-10-06 11:00",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม.",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม. • ข้อมูลเก่า",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
@@ -80,7 +80,7 @@
       "rain6h": null,
       "rain12h": null,
       "rain24h": 0,
-      "severity": "NORMAL"
+      "severity": "OFFLINE"
     },
     {
       "code": "RF.BKY.01",
@@ -258,6 +258,7 @@
     }
   ],
   "errors": [
+    "Rain: 2 จุดไม่มีข้อมูลสด",
     "Road Flood: 5 จุดไม่มีข้อมูลสด"
   ],
   "sources": {
