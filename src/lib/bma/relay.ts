@@ -62,15 +62,37 @@ function normalizeThaiWaterWater(station: WaterStation) {
   return station;
 }
 
+function fallbackWaterKey(station: WaterStation) {
+  if (!station.sourceStatus.includes("ThaiWater fallback")) {
+    return `bma:${station.code}`;
+  }
+
+  const lat = Number(station.latitude);
+  const lon = Number(station.longitude);
+  const coordKey = Number.isFinite(lat) && Number.isFinite(lon)
+    ? `${lat.toFixed(5)},${lon.toFixed(5)}`
+    : "no-coord";
+  return `thaiwater:${station.name.trim().toLowerCase()}:${coordKey}`;
+}
+
 function markWater(stations: WaterStation[], stale: boolean): WaterStation[] {
-  return stations.map((raw) => {
+  const seen = new Set<string>();
+  const unique: WaterStation[] = [];
+
+  for (const raw of stations) {
     const station = normalizeThaiWaterWater(raw);
-    return {
+    const key = fallbackWaterKey(station);
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    unique.push({
       ...station,
       sourceStatus: relayLabel(station.sourceStatus, stale),
       severity: stale ? "OFFLINE" : station.severity,
-    };
-  });
+    });
+  }
+
+  return unique;
 }
 
 function markRoad(stations: RoadFloodStation[], stale: boolean): RoadFloodStation[] {
