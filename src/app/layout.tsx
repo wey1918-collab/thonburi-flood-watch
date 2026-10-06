@@ -4,8 +4,8 @@ import "./globals.css";
 import "./dashboard-v08.css";
 
 export const metadata: Metadata = {
-  title: "Thonburi Flood Watch",
-  description: "แดชบอร์ดเฝ้าระวังน้ำท่วมบางกอกน้อย ฝั่งธนบุรี และแนวถนนเชื่อมบางกรวย",
+  title: "Thonburi Flood Watch — Public Beta",
+  description: "แดชบอร์ดอิสระเพื่อเฝ้าระวังน้ำท่วมบางกอกน้อย ฝั่งธนบุรี และแนวเชื่อมบางกรวย โดยรวบรวมข้อมูลจากหลายแหล่ง ไม่ใช่ระบบเตือนภัยทางการ",
   applicationName: "Thonburi Flood Watch",
   manifest: "/manifest.webmanifest"
 };
