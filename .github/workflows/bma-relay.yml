@@ -11,6 +11,7 @@ on:
       - ".github/workflows/bma-relay.yml"
       - "scripts/bma-relay.mjs"
       - "scripts/road-monitor-enrich.mjs"
+      - "scripts/dedupe-water.mjs"
       - "src/lib/bma/relay.ts"
       - "src/lib/overview/adapter.ts"
       - "src/lib/thaiwater/**"
@@ -40,6 +41,9 @@ jobs:
 
       - name: Fetch BMA and ThaiWater base data
         run: node scripts/bma-relay.mjs /tmp/bma-latest.json
+
+      - name: Deduplicate fallback water stations
+        run: node scripts/dedupe-water.mjs /tmp/bma-latest.json
 
       - name: Enrich requested road monitors
         run: node scripts/road-monitor-enrich.mjs /tmp/bma-latest.json
