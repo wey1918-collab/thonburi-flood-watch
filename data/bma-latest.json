@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-06T02:05:48.992Z",
+  "generatedAt": "2026-10-06T02:21:45.765Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -131,13 +131,13 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-05T18:50:00.000Z",
-      "observedAtRaw": "2026-10-06 01:50",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 5.3 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 0.82,
+      "observedAt": "2026-10-06T02:10:00.000Z",
+      "observedAtRaw": "2026-10-06 09:10",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 5.3 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": 0.3,
       "levelOutside": null,
-      "riverLevel": 0.82,
-      "severity": "OFFLINE"
+      "riverLevel": 0.3,
+      "severity": "CRITICAL"
     },
     {
       "code": "WL.BBR.01",
@@ -146,12 +146,12 @@
       "latitude": 13.78815,
       "longitude": 100.509148,
       "kind": "WATER",
-      "observedAt": "2026-10-06T00:00:00.000Z",
-      "observedAtRaw": "2026-10-06 07:00",
+      "observedAt": "2026-10-06T01:00:00.000Z",
+      "observedAtRaw": "2026-10-06 08:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 3.7 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.24,
+      "levelInside": 1.2,
       "levelOutside": null,
-      "riverLevel": 1.24,
+      "riverLevel": 1.2,
       "severity": "CRITICAL"
     },
     {
@@ -161,13 +161,13 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-05T18:50:00.000Z",
-      "observedAtRaw": "2026-10-06 01:50",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.4 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 0.82,
+      "observedAt": "2026-10-06T02:10:00.000Z",
+      "observedAtRaw": "2026-10-06 09:10",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 4.4 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": 0.3,
       "levelOutside": null,
-      "riverLevel": 0.82,
-      "severity": "OFFLINE"
+      "riverLevel": 0.3,
+      "severity": "CRITICAL"
     },
     {
       "code": "WL.SRE.01",
@@ -176,13 +176,13 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-05T18:50:00.000Z",
-      "observedAtRaw": "2026-10-06 01:50",
-      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 0.82,
+      "observedAt": "2026-10-06T02:10:00.000Z",
+      "observedAtRaw": "2026-10-06 09:10",
+      "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.8 กม. • วิกฤต • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": 0.3,
       "levelOutside": null,
-      "riverLevel": 0.82,
-      "severity": "OFFLINE"
+      "riverLevel": 0.3,
+      "severity": "CRITICAL"
     }
   ],
   "roadFlood": [
@@ -258,7 +258,6 @@
     }
   ],
   "errors": [
-    "Water: 3 จุดไม่มีข้อมูลสด",
     "Road Flood: 5 จุดไม่มีข้อมูลสด"
   ],
   "sources": {
