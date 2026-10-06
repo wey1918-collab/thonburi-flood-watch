@@ -1,4 +1,4 @@
-import type { TmdBangkokForecast } from "./types";
+import type { TmdAwsRainContext, TmdBangkokForecast, TmdSourceProbe } from "./types";
 
 const BASES = [
   "https://www.tmd.go.th/forecast/daily",
@@ -6,6 +6,9 @@ const BASES = [
 ] as const;
 const PRIMARY_BASE = BASES[0];
 const WEATHER_THAI = "https://www5.tmd.go.th/weather/weatherthailand";
+const TMD_AWS_BANGKOK = "https://www.tmd.go.th/weather/province/bangkok";
+const TMD_RADAR_COMPOSITE = "https://weather.tmd.go.th/composite/index_composite.html";
+const TMD_BANGKOK_NOWCAST = "https://satda.tmd.go.th/wp-content/uploads/data/dashboard/radar_map/bangkok_nowcast.php";
 
 function decodeHtml(value: string) {
   return value
@@ -48,14 +51,14 @@ function candidateUrls() {
   return [...dated, ...BASES, WEATHER_THAI];
 }
 
-async function fetchHtml(url: string) {
+async function fetchHtml(url: string, timeoutMs = 20000) {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; ThonburiFloodWatch/0.4; +https://thonburi-flood-watch.vercel.app)",
+      "User-Agent": "Mozilla/5.0 (compatible; ThonburiFloodWatch/1.0; +https://thonburi-flood-watch.vercel.app)",
       Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       "Accept-Language": "th-TH,th;q=0.9,en;q=0.7",
     },
-    signal: AbortSignal.timeout(20000),
+    signal: AbortSignal.timeout(timeoutMs),
     cache: "no-store",
   });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -97,7 +100,7 @@ function compactSummary(section: string) {
   return (sentence?.[1] || forecastOnly.slice(0, 237) + "…").trim();
 }
 
-function parse(url: string, html: string): TmdBangkokForecast | null {
+function parseForecast(url: string, html: string) {
   const text = decodeHtml(html);
   const section = findBangkokSection(text);
   if (!section) return null;
@@ -113,7 +116,6 @@ function parse(url: string, html: string): TmdBangkokForecast | null {
     || "";
 
   return {
-    ok: true,
     sourceUrl: url,
     fetchedAt: new Date().toISOString(),
     issuedAtRaw: issued,
@@ -128,18 +130,98 @@ function parse(url: string, html: string): TmdBangkokForecast | null {
   };
 }
 
+function parseAwsRain(html: string): TmdAwsRainContext {
+  const text = decodeHtml(html);
+  const start = text.search(/สภาพอากาศปัจจุบันจากระบบตรวจอากาศอัตโนมัติ\s*\(AWS\)/i);
+  const remainder = start >= 0 ? text.slice(start) : text;
+  const end = remainder.search(/สภาพอากาศปัจจุบันจากสถานีอุตุนิยมวิทยา/i);
+  const section = end > 0 ? remainder.slice(0, end) : remainder.slice(0, 3000);
+  const rain15mMm = num(/ฝนสะสม\s*15\s*นาที\s*([0-9]+(?:\.[0-9]+)?)\s*(?:มม\.?|mm)/i, section);
+  const rain1hMm = num(/ฝนสะสม\s*1\s*ชั่วโมง\s*([0-9]+(?:\.[0-9]+)?)\s*(?:มม\.?|mm)/i, section);
+  const rainTodayMm = num(/ฝนสะสมวันนี้[^0-9]{0,80}([0-9]+(?:\.[0-9]+)?)\s*(?:มม\.?|mm)/i, section);
+  const observedAtRaw = section.match(/ออกประกาศ\s*([^\n]{1,80})/)?.[1]?.trim() || "";
+  const measurementAvailable = [rain15mMm, rain1hMm, rainTodayMm].some((value) => value != null);
+
+  return {
+    ok: true,
+    measurementAvailable,
+    sourceUrl: TMD_AWS_BANGKOK,
+    fetchedAt: new Date().toISOString(),
+    rain15mMm,
+    rain1hMm,
+    rainTodayMm,
+    observedAtRaw,
+  };
+}
+
+async function getAwsRain(): Promise<TmdAwsRainContext> {
+  try {
+    return parseAwsRain(await fetchHtml(TMD_AWS_BANGKOK, 10000));
+  } catch (error) {
+    return {
+      ok: false,
+      measurementAvailable: false,
+      sourceUrl: TMD_AWS_BANGKOK,
+      fetchedAt: new Date().toISOString(),
+      rain15mMm: null,
+      rain1hMm: null,
+      rainTodayMm: null,
+      observedAtRaw: "",
+      error: error instanceof Error ? error.message : "fetch failed",
+    };
+  }
+}
+
+async function probeSource(sourceUrl: string): Promise<TmdSourceProbe> {
+  const checkedAt = new Date().toISOString();
+  try {
+    await fetchHtml(sourceUrl, 10000);
+    return { ok: true, sourceUrl, checkedAt };
+  } catch (error) {
+    return {
+      ok: false,
+      sourceUrl,
+      checkedAt,
+      error: error instanceof Error ? error.message : "fetch failed",
+    };
+  }
+}
+
 export async function getTmdBangkokForecast(): Promise<TmdBangkokForecast> {
+  const auxPromise = Promise.all([
+    getAwsRain(),
+    probeSource(TMD_RADAR_COMPOSITE),
+    probeSource(TMD_BANGKOK_NOWCAST),
+  ]);
   const errors: string[] = [];
+  let parsedForecast: ReturnType<typeof parseForecast> = null;
+
   for (const url of candidateUrls()) {
     try {
       const html = await fetchHtml(url);
-      const parsed = parse(url, html);
-      if (parsed) return parsed;
+      const parsed = parseForecast(url, html);
+      if (parsed) {
+        parsedForecast = parsed;
+        break;
+      }
       errors.push(`${url}: ไม่พบส่วนกรุงเทพและปริมณฑล`);
     } catch (error) {
       errors.push(`${url}: ${error instanceof Error ? error.message : "fetch failed"}`);
     }
   }
+
+  const [aws, radar, nowcast] = await auxPromise;
+
+  if (parsedForecast) {
+    return {
+      ok: true,
+      ...parsedForecast,
+      aws,
+      radar,
+      nowcast,
+    };
+  }
+
   return {
     ok: false,
     sourceUrl: PRIMARY_BASE,
@@ -153,6 +235,9 @@ export async function getTmdBangkokForecast(): Promise<TmdBangkokForecast> {
     maxTempC: null,
     windText: "",
     summary: "",
+    aws,
+    radar,
+    nowcast,
     error: errors.join(" • "),
   };
 }
