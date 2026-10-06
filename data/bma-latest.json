@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-06T17:02:25.960Z",
+  "generatedAt": "2026-10-06T17:17:31.698Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -19,7 +19,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 15.2,
+      "rain24h": 17,
       "severity": "NORMAL"
     },
     {
