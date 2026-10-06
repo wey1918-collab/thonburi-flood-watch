@@ -1,0 +1,36 @@
+name: Generate Lockfile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/generate-lock.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: "24"
+
+      - name: Generate lockfile without lifecycle scripts
+        run: npm install --package-lock-only --ignore-scripts --no-fund --no-audit
+
+      - name: Emit lockfile
+        shell: bash
+        run: |
+          echo "LOCKFILE_B64_BEGIN"
+          base64 -w0 package-lock.json
+          echo
+          echo "LOCKFILE_B64_END"
