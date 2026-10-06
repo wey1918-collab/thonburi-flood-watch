@@ -7,6 +7,27 @@ const MAX_DISTANCE_KM = 15;
 const MAX_STATIONS = 6;
 const STALE_MS = 3 * 60 * 60 * 1000;
 
+// Dashboard นี้เน้นฝั่งธนบุรีเป็นหลัก จึงคัดเฉพาะเขตฝั่งตะวันตกของ
+// แม่น้ำเจ้าพระยาและพื้นที่บางกรวยที่เชื่อมต่อกับเส้นทางเฝ้าระวังของเว็บ
+const THONBURI_SIDE_DISTRICTS = new Set([
+  "บางกอกน้อย",
+  "บางกอกใหญ่",
+  "ธนบุรี",
+  "ตลิ่งชัน",
+  "บางพลัด",
+  "คลองสาน",
+  "ภาษีเจริญ",
+  "บางแค",
+  "ทวีวัฒนา",
+  "หนองแขม",
+  "จอมทอง",
+  "บางขุนเทียน",
+  "บางบอน",
+  "ราษฎร์บูรณะ",
+  "ทุ่งครุ",
+  "บางกรวย",
+]);
+
 function sourceKey(station) {
   const status = String(station?.sourceStatus || "");
   if (!status.includes("ThaiWater")) return `bma:${station?.code || station?.name || "unknown"}`;
@@ -96,11 +117,16 @@ function stationIdentity(row) {
   return code || `${name.toLowerCase()}:${lat?.toFixed(5) || "na"},${lon?.toFixed(5) || "na"}`;
 }
 
+function isThonburiSideDistrict(district) {
+  if (!district) return false;
+  return [...THONBURI_SIDE_DISTRICTS].some((name) => district.includes(name));
+}
+
 async function loadNearbyThaiWaterStations() {
   const response = await fetch(THAIWATER_WATER_URL, {
     headers: {
       Accept: "application/json,text/plain,*/*",
-      "User-Agent": "ThonburiFloodWatchRelay/1.2 (+https://thonburi-flood-watch.vercel.app)",
+      "User-Agent": "ThonburiFloodWatchRelay/1.3 (+https://thonburi-flood-watch.vercel.app)",
       Referer: "https://www.thaiwater.net/",
     },
     signal: AbortSignal.timeout(12000),
@@ -116,7 +142,11 @@ async function loadNearbyThaiWaterStations() {
     const geocode = row?.geocode || {};
     const provinceCode = text(geocode.province_code);
     const provinceName = thaiText(geocode.province_name);
-    if (provinceCode && provinceCode !== "10" && !/กรุงเทพ/.test(provinceName)) continue;
+    const district = thaiText(geocode.amphoe_name);
+
+    // รับเฉพาะกรุงเทพฯ และนนทบุรี จากนั้นบังคับให้เป็นเขตฝั่งธน/บางกรวยเท่านั้น
+    const supportedProvince = provinceCode === "10" || provinceCode === "12" || /กรุงเทพ|นนทบุรี/.test(provinceName);
+    if (!supportedProvince || !isThonburiSideDistrict(district)) continue;
 
     const lat = numberValue(station.tele_station_lat);
     const lon = numberValue(station.tele_station_long);
@@ -136,7 +166,6 @@ async function loadNearbyThaiWaterStations() {
     const status = hydrologyStatus(row, stale);
     const sourceCode = text(station.tele_station_oldcode) || text(station.id);
     const sourceName = thaiText(station.tele_station_name) || "ThaiWater water station";
-    const district = thaiText(geocode.amphoe_name) || "กรุงเทพมหานคร";
 
     candidates.push({
       code: sourceCode ? `TW.${sourceCode}` : `TW.${lat.toFixed(5)}.${lon.toFixed(5)}`,
@@ -147,7 +176,7 @@ async function loadNearbyThaiWaterStations() {
       kind: "WATER",
       observedAt,
       observedAtRaw: rawTime,
-      sourceStatus: `ThaiWater fallback • สถานีจริง ${distance.toFixed(1)} กม. • ${status.label} • ไม่ใช่เซนเซอร์ BMA เดิม`,
+      sourceStatus: `ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง ${distance.toFixed(1)} กม. • ${status.label} • ไม่ใช่เซนเซอร์ BMA เดิม`,
       levelInside: msl,
       levelOutside: null,
       riverLevel: msl,
@@ -177,9 +206,9 @@ if (fallbackActive) {
     const expanded = await loadNearbyThaiWaterStations();
     if (expanded.length >= 3) {
       snapshot.water = expanded;
-      console.log(`ThaiWater fallback expanded to ${expanded.length} unique nearby stations.`);
+      console.log(`ThaiWater fallback expanded to ${expanded.length} unique Thonburi-side stations.`);
     } else {
-      console.warn(`ThaiWater expansion found only ${expanded.length} stations; keeping existing fallback and deduplicating it.`);
+      console.warn(`ThaiWater Thonburi-side expansion found only ${expanded.length} stations; keeping existing fallback and deduplicating it.`);
     }
   } catch (error) {
     console.warn(`ThaiWater expansion failed: ${error instanceof Error ? error.message : error}`);
