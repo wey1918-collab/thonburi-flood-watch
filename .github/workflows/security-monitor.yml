@@ -83,7 +83,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          code="$(curl -sS -o /tmp/cross-site.out -w '%{http_code}' -H 'Sec-Fetch-Site: cross-site' --max-time 20 https://thonburi-flood-watch.vercel.app/api/overview/live)"
+          probe="https://thonburi-flood-watch.vercel.app/api/overview/live?security_probe=${GITHUB_RUN_ID}"
+          code="$(curl -sS -o /tmp/cross-site.out -w '%{http_code}' -H 'Sec-Fetch-Site: cross-site' --max-time 20 "$probe")"
           test "$code" = "403"
 
       - name: Check API rejects unsafe methods
