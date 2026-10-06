@@ -144,7 +144,7 @@ export function checkApiAbuseProtection(
     windowMs: options.burstWindowMs ?? 10_000,
   });
   if (!burst.allowed) {
-    return { allowed: false, status: 429, reason: "Too many requests", ...burst };
+    return { ...burst, allowed: false, status: 429, reason: "Too many requests" };
   }
 
   const sustained = checkApiRateLimit(request, {
@@ -153,7 +153,7 @@ export function checkApiAbuseProtection(
     windowMs: options.sustainedWindowMs ?? 60_000,
   });
   if (!sustained.allowed) {
-    return { allowed: false, status: 429, reason: "Too many requests", ...sustained };
+    return { ...sustained, allowed: false, status: 429, reason: "Too many requests" };
   }
 
   const global = consumeBucket(
@@ -162,7 +162,7 @@ export function checkApiAbuseProtection(
     options.globalWindowMs ?? 60_000
   );
   if (!global.allowed) {
-    return { allowed: false, status: 429, reason: "Service is busy", ...global };
+    return { ...global, allowed: false, status: 429, reason: "Service is busy" };
   }
 
   return {
