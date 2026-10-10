@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-10T15:06:29.721Z",
+  "generatedAt": "2026-10-10T15:21:15.694Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -131,13 +131,13 @@
       "latitude": 13.79965,
       "longitude": 100.43863,
       "kind": "WATER",
-      "observedAt": "2026-10-10T14:30:00.000Z",
-      "observedAtRaw": "2026-10-10 21:30",
-      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • ล้นตลิ่ง • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 2.18,
+      "observedAt": "2026-10-10T15:10:00.000Z",
+      "observedAtRaw": "2026-10-10 22:10",
+      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": 2.07,
       "levelOutside": null,
-      "riverLevel": 2.18,
-      "severity": "CRITICAL"
+      "riverLevel": 2.07,
+      "severity": "WATCH"
     },
     {
       "code": "TW.CPY015",
@@ -146,12 +146,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-10T14:40:00.000Z",
-      "observedAtRaw": "2026-10-10 21:40",
+      "observedAt": "2026-10-10T15:10:00.000Z",
+      "observedAtRaw": "2026-10-10 22:10",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 7.4 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.01,
+      "levelInside": 0.88,
       "levelOutside": null,
-      "riverLevel": 1.01,
+      "riverLevel": 0.88,
       "severity": "WATCH"
     },
     {
@@ -161,12 +161,12 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-10-10T14:40:00.000Z",
-      "observedAtRaw": "2026-10-10 21:40",
-      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • ปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -6.1,
+      "observedAt": "2026-10-10T15:10:00.000Z",
+      "observedAtRaw": "2026-10-10 22:10",
+      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • น้ำปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": -3,
       "levelOutside": null,
-      "riverLevel": -6.1,
+      "riverLevel": -3,
       "severity": "NORMAL"
     }
   ],
