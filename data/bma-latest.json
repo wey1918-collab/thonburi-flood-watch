@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-10T21:59:49.084Z",
+  "generatedAt": "2026-10-10T22:10:56.765Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -230,30 +230,30 @@
     },
     {
       "code": "FL.BKN.01",
-      "name": "ถ.อิสรภาพ ช่วงตลาดพรานนก",
-      "road": "ถ.อิสรภาพ ช่วงตลาดพรานนก",
+      "name": "ถ.อิสรภาพ (ตลาดพรานนก)",
+      "road": "ถนนอิสรภาพ",
       "district": "บางกอกน้อย",
       "latitude": 13.7547,
       "longitude": 100.4781,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-10-04T04:55:00.000Z",
-      "observedAtRaw": "2026-10-04 11:55",
-      "sourceStatus": "ThaiWater relay • รหัสตรงกัน • ข้อมูลเก่า",
-      "depthCm": 0,
+      "observedAt": null,
+      "observedAtRaw": "",
+      "sourceStatus": "ThaiWater relay • ไม่พบเซนเซอร์ใกล้เคียง",
+      "depthCm": null,
       "severity": "OFFLINE"
     },
     {
       "code": "FL.BKN.02",
-      "name": "ถ.บรมราชชนนี ช่วงสายใต้",
-      "road": "ถ.บรมราชชนนี ช่วงสายใต้",
+      "name": "ถ.บรมราชชนนี (สายใต้)",
+      "road": "ถนนบรมราชชนนี",
       "district": "บางกอกน้อย",
       "latitude": 13.78705,
       "longitude": 100.46802,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-10-04T04:55:00.000Z",
-      "observedAtRaw": "2026-10-04 11:55",
-      "sourceStatus": "ThaiWater relay • รหัสตรงกัน • ข้อมูลเก่า",
-      "depthCm": 0,
+      "observedAt": null,
+      "observedAtRaw": "",
+      "sourceStatus": "ThaiWater relay • ไม่พบเซนเซอร์ใกล้เคียง",
+      "depthCm": null,
       "severity": "OFFLINE"
     }
   ],
