@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-10T23:46:06.783Z",
+  "generatedAt": "2026-10-10T23:55:37.100Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -125,18 +125,33 @@
   ],
   "water": [
     {
+      "code": "TW.BKK003",
+      "name": "คลองมหาสวัสดิ บางกรวย-สวนผัก (BKK003)",
+      "district": "ตลิ่งชัน",
+      "latitude": 13.79965,
+      "longitude": 100.43863,
+      "kind": "WATER",
+      "observedAt": "2026-10-10T23:40:00.000Z",
+      "observedAtRaw": "2026-10-11 06:40",
+      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • ล้นตลิ่ง • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": 2.27,
+      "levelOutside": null,
+      "riverLevel": 2.27,
+      "severity": "CRITICAL"
+    },
+    {
       "code": "TW.CPY015",
       "name": "สะพานกรุงเทพ (CPY015)",
       "district": "ธนบุรี",
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-10T23:30:00.000Z",
-      "observedAtRaw": "2026-10-11 06:30",
+      "observedAt": "2026-10-10T23:40:00.000Z",
+      "observedAtRaw": "2026-10-11 06:40",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 7.4 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.83,
+      "levelInside": 1.85,
       "levelOutside": null,
-      "riverLevel": 1.83,
+      "riverLevel": 1.85,
       "severity": "WATCH"
     },
     {
@@ -146,28 +161,13 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-10-10T23:30:00.000Z",
-      "observedAtRaw": "2026-10-11 06:30",
-      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • ปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -6.07,
+      "observedAt": "2026-10-10T23:40:00.000Z",
+      "observedAtRaw": "2026-10-11 06:40",
+      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • น้ำปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": -2.96,
       "levelOutside": null,
-      "riverLevel": -6.07,
+      "riverLevel": -2.96,
       "severity": "NORMAL"
-    },
-    {
-      "code": "TW.BKK003",
-      "name": "คลองมหาสวัสดิ บางกรวย-สวนผัก (BKK003)",
-      "district": "ตลิ่งชัน",
-      "latitude": 13.79965,
-      "longitude": 100.43863,
-      "kind": "WATER",
-      "observedAt": "2026-10-10T20:00:00.000Z",
-      "observedAtRaw": "2026-10-11 03:00",
-      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • ข้อมูลเก่า • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.57,
-      "levelOutside": null,
-      "riverLevel": 1.57,
-      "severity": "OFFLINE"
     }
   ],
   "roadFlood": [
