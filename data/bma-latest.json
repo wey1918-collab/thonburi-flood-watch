@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-14T20:42:08.447Z",
+  "generatedAt": "2026-10-14T21:08:48.272Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -131,12 +131,12 @@
       "latitude": 13.79965,
       "longitude": 100.43863,
       "kind": "WATER",
-      "observedAt": "2026-10-14T20:30:00.000Z",
-      "observedAtRaw": "2026-10-15 03:30",
+      "observedAt": "2026-10-14T20:50:00.000Z",
+      "observedAtRaw": "2026-10-15 03:50",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.36,
+      "levelInside": 1.33,
       "levelOutside": null,
-      "riverLevel": 1.36,
+      "riverLevel": 1.33,
       "severity": "WATCH"
     },
     {
@@ -146,12 +146,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-14T20:30:00.000Z",
-      "observedAtRaw": "2026-10-15 03:30",
+      "observedAt": "2026-10-14T20:50:00.000Z",
+      "observedAtRaw": "2026-10-15 03:50",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 7.4 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -0.02,
+      "levelInside": -0.03,
       "levelOutside": null,
-      "riverLevel": -0.02,
+      "riverLevel": -0.03,
       "severity": "WATCH"
     },
     {
@@ -161,12 +161,12 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-10-14T20:30:00.000Z",
-      "observedAtRaw": "2026-10-15 03:30",
+      "observedAt": "2026-10-14T20:50:00.000Z",
+      "observedAtRaw": "2026-10-15 03:50",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • เฝ้าระวัง • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -5.66,
+      "levelInside": -5.69,
       "levelOutside": null,
-      "riverLevel": -5.66,
+      "riverLevel": -5.69,
       "severity": "WATCH"
     }
   ],
