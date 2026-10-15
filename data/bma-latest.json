@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-15T12:43:56.615Z",
+  "generatedAt": "2026-10-15T13:22:51.430Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -19,7 +19,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 1.2,
+      "rain24h": 0.6,
       "severity": "NORMAL"
     },
     {
@@ -131,12 +131,12 @@
       "latitude": 13.79965,
       "longitude": 100.43863,
       "kind": "WATER",
-      "observedAt": "2026-10-15T12:30:00.000Z",
-      "observedAtRaw": "2026-10-15 19:30",
+      "observedAt": "2026-10-15T13:00:00.000Z",
+      "observedAtRaw": "2026-10-15 20:00",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • ล้นตลิ่ง • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 2.09,
+      "levelInside": 2.12,
       "levelOutside": null,
-      "riverLevel": 2.09,
+      "riverLevel": 2.12,
       "severity": "CRITICAL"
     },
     {
@@ -146,12 +146,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-15T12:30:00.000Z",
-      "observedAtRaw": "2026-10-15 19:30",
+      "observedAt": "2026-10-15T13:10:00.000Z",
+      "observedAtRaw": "2026-10-15 20:10",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 7.4 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.41,
+      "levelInside": 1.37,
       "levelOutside": null,
-      "riverLevel": 1.41,
+      "riverLevel": 1.37,
       "severity": "WATCH"
     },
     {
@@ -161,12 +161,12 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-10-15T12:30:00.000Z",
-      "observedAtRaw": "2026-10-15 19:30",
+      "observedAt": "2026-10-15T13:10:00.000Z",
+      "observedAtRaw": "2026-10-15 20:10",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • เฝ้าระวัง • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -5.66,
+      "levelInside": -5.65,
       "levelOutside": null,
-      "riverLevel": -5.66,
+      "riverLevel": -5.65,
       "severity": "WATCH"
     }
   ],
