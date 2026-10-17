@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-17T09:59:23.547Z",
+  "generatedAt": "2026-10-17T10:18:54.148Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -161,12 +161,12 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-10-17T09:40:00.000Z",
-      "observedAtRaw": "2026-10-17 16:40",
+      "observedAt": "2026-10-17T10:00:00.000Z",
+      "observedAtRaw": "2026-10-17 17:00",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • น้ำปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -2.09,
+      "levelInside": -2.12,
       "levelOutside": null,
-      "riverLevel": -2.09,
+      "riverLevel": -2.12,
       "severity": "NORMAL"
     }
   ],
