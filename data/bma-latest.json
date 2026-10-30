@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-10-30T12:22:54.376Z",
+  "generatedAt": "2026-10-30T13:21:49.653Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -131,12 +131,12 @@
       "latitude": 13.79965,
       "longitude": 100.43863,
       "kind": "WATER",
-      "observedAt": "2026-10-30T11:50:00.000Z",
-      "observedAtRaw": "2026-10-30 18:50",
+      "observedAt": "2026-10-30T13:10:00.000Z",
+      "observedAtRaw": "2026-10-30 20:10",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.86,
+      "levelInside": 1.92,
       "levelOutside": null,
-      "riverLevel": 1.86,
+      "riverLevel": 1.92,
       "severity": "WATCH"
     },
     {
@@ -146,12 +146,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-10-30T12:10:00.000Z",
-      "observedAtRaw": "2026-10-30 19:10",
+      "observedAt": "2026-10-30T13:10:00.000Z",
+      "observedAtRaw": "2026-10-30 20:10",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 7.4 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.23,
+      "levelInside": 1.2,
       "levelOutside": null,
-      "riverLevel": 1.23,
+      "riverLevel": 1.2,
       "severity": "WATCH"
     },
     {
@@ -161,12 +161,12 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-10-30T12:10:00.000Z",
-      "observedAtRaw": "2026-10-30 19:10",
+      "observedAt": "2026-10-30T13:10:00.000Z",
+      "observedAtRaw": "2026-10-30 20:10",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • ปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -6.07,
+      "levelInside": -6.05,
       "levelOutside": null,
-      "riverLevel": -6.07,
+      "riverLevel": -6.05,
       "severity": "NORMAL"
     }
   ],
@@ -179,8 +179,8 @@
       "latitude": 13.7547,
       "longitude": 100.4781,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-10-30T12:15:00.000Z",
-      "observedAtRaw": "2026-10-30 19:15",
+      "observedAt": "2026-10-30T13:15:00.000Z",
+      "observedAtRaw": "2026-10-30 20:15",
       "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 1.1 กม. • ถ.อิสรภาพ ช่วงตลาดพรานนก (FL.BKN.01)",
       "depthCm": 0,
       "severity": "NORMAL"
@@ -195,9 +195,9 @@
       "kind": "ROAD_FLOOD",
       "observedAt": "2026-10-30T09:50:00.000Z",
       "observedAtRaw": "2026-10-30 16:50",
-      "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 2.2 กม. • อ.บางพลัด(ขาเข้า) (TN.BPD.01(IN))",
+      "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 2.2 กม. • อ.บางพลัด(ขาเข้า) (TN.BPD.01(IN)) • ข้อมูลเก่า",
       "depthCm": 0,
-      "severity": "NORMAL"
+      "severity": "OFFLINE"
     },
     {
       "code": "MON.RATCHAPHRUEK",
@@ -207,8 +207,8 @@
       "latitude": 13.78269,
       "longitude": 100.4335,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-10-30T12:15:00.000Z",
-      "observedAtRaw": "2026-10-30 19:15",
+      "observedAt": "2026-10-30T13:15:00.000Z",
+      "observedAtRaw": "2026-10-30 20:15",
       "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 1.2 กม. • ถ.ฉิมพลี ช่วง ซ.ฉิมพลี 31 * (FL.TLC.01)",
       "depthCm": 0,
       "severity": "NORMAL"
@@ -221,8 +221,8 @@
       "latitude": 13.7547,
       "longitude": 100.4781,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-10-30T12:15:00.000Z",
-      "observedAtRaw": "2026-10-30 19:15",
+      "observedAt": "2026-10-30T13:15:00.000Z",
+      "observedAtRaw": "2026-10-30 20:15",
       "sourceStatus": "ThaiWater relay • รหัสตรงกัน",
       "depthCm": 0,
       "severity": "NORMAL"
@@ -235,15 +235,16 @@
       "latitude": 13.78705,
       "longitude": 100.46802,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-10-30T12:15:00.000Z",
-      "observedAtRaw": "2026-10-30 19:15",
+      "observedAt": "2026-10-30T13:15:00.000Z",
+      "observedAtRaw": "2026-10-30 20:15",
       "sourceStatus": "ThaiWater relay • รหัสตรงกัน",
       "depthCm": 0,
       "severity": "NORMAL"
     }
   ],
   "errors": [
-    "Rain: 1 จุดไม่มีข้อมูลสด"
+    "Rain: 1 จุดไม่มีข้อมูลสด",
+    "Road Flood: 1 จุดไม่มีข้อมูลสด"
   ],
   "sources": {
     "rain": "https://api-v3.thaiwater.net/api/v1/thaiwater30/public/rain_24h?province_code=10",
