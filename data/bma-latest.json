@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "generatedAt": "2026-11-07T07:16:46.639Z",
+  "generatedAt": "2026-11-07T14:05:31.284Z",
   "rain": [
     {
       "code": "RF.BKN.01",
@@ -9,17 +9,17 @@
       "latitude": 13.77078,
       "longitude": 100.46806,
       "kind": "RAIN",
-      "observedAt": "2026-11-07T06:00:00.000Z",
-      "observedAtRaw": "2026-11-07 13:00",
+      "observedAt": "2026-11-07T13:00:00.000Z",
+      "observedAtRaw": "2026-11-07 20:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.0 กม.",
       "rain5m": null,
       "rain15m": null,
       "rain30m": null,
-      "rain1h": 2.5,
+      "rain1h": 0,
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 8.5,
+      "rain24h": 3,
       "severity": "NORMAL"
     },
     {
@@ -29,8 +29,8 @@
       "latitude": 13.74714,
       "longitude": 100.48531,
       "kind": "RAIN",
-      "observedAt": "2026-11-07T06:00:00.000Z",
-      "observedAtRaw": "2026-11-07 13:00",
+      "observedAt": "2026-11-07T13:00:00.000Z",
+      "observedAtRaw": "2026-11-07 20:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.0 กม.",
       "rain5m": null,
       "rain15m": null,
@@ -39,7 +39,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 20.5,
+      "rain24h": 1.5,
       "severity": "NORMAL"
     },
     {
@@ -49,8 +49,8 @@
       "latitude": 13.72497,
       "longitude": 100.48558,
       "kind": "RAIN",
-      "observedAt": "2026-11-07T06:00:00.000Z",
-      "observedAtRaw": "2026-11-07 13:00",
+      "observedAt": "2026-11-07T13:00:00.000Z",
+      "observedAtRaw": "2026-11-07 20:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.0 กม.",
       "rain5m": null,
       "rain15m": null,
@@ -59,7 +59,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 21,
+      "rain24h": 13,
       "severity": "NORMAL"
     },
     {
@@ -69,8 +69,8 @@
       "latitude": 13.7067,
       "longitude": 100.49646,
       "kind": "RAIN",
-      "observedAt": "2026-11-07T06:00:00.000Z",
-      "observedAtRaw": "2026-11-07 13:00",
+      "observedAt": "2026-11-07T13:00:00.000Z",
+      "observedAtRaw": "2026-11-07 20:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.0 กม.",
       "rain5m": null,
       "rain15m": null,
@@ -79,7 +79,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 17.5,
+      "rain24h": 18,
       "severity": "NORMAL"
     },
     {
@@ -89,8 +89,8 @@
       "latitude": 13.72332,
       "longitude": 100.47622,
       "kind": "RAIN",
-      "observedAt": "2026-11-07T06:00:00.000Z",
-      "observedAtRaw": "2026-11-07 13:00",
+      "observedAt": "2026-11-07T13:00:00.000Z",
+      "observedAtRaw": "2026-11-07 20:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.0 กม.",
       "rain5m": null,
       "rain15m": null,
@@ -99,7 +99,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 28,
+      "rain24h": 24,
       "severity": "NORMAL"
     },
     {
@@ -109,8 +109,8 @@
       "latitude": 13.74022,
       "longitude": 100.49012,
       "kind": "RAIN",
-      "observedAt": "2026-11-07T06:00:00.000Z",
-      "observedAtRaw": "2026-11-07 13:00",
+      "observedAt": "2026-11-07T13:00:00.000Z",
+      "observedAtRaw": "2026-11-07 20:00",
       "sourceStatus": "ThaiWater fallback • สถานีใกล้เคียง 0.0 กม.",
       "rain5m": null,
       "rain15m": null,
@@ -119,7 +119,7 @@
       "rain3h": null,
       "rain6h": null,
       "rain12h": null,
-      "rain24h": 16,
+      "rain24h": 5,
       "severity": "NORMAL"
     }
   ],
@@ -131,12 +131,12 @@
       "latitude": 13.79965,
       "longitude": 100.43863,
       "kind": "WATER",
-      "observedAt": "2026-11-07T07:00:00.000Z",
-      "observedAtRaw": "2026-11-07 14:00",
+      "observedAt": "2026-11-07T13:50:00.000Z",
+      "observedAtRaw": "2026-11-07 20:50",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 5.5 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 1.45,
+      "levelInside": 1.35,
       "levelOutside": null,
-      "riverLevel": 1.45,
+      "riverLevel": 1.35,
       "severity": "WATCH"
     },
     {
@@ -146,12 +146,12 @@
       "latitude": 13.700301,
       "longitude": 100.49277,
       "kind": "WATER",
-      "observedAt": "2026-11-07T06:50:00.000Z",
-      "observedAtRaw": "2026-11-07 13:50",
+      "observedAt": "2026-11-07T13:50:00.000Z",
+      "observedAtRaw": "2026-11-07 20:50",
       "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 7.4 กม. • น้ำมาก • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": 0.92,
+      "levelInside": 0.17,
       "levelOutside": null,
-      "riverLevel": 0.92,
+      "riverLevel": 0.17,
       "severity": "WATCH"
     },
     {
@@ -161,13 +161,13 @@
       "latitude": 13.69158,
       "longitude": 100.38127,
       "kind": "WATER",
-      "observedAt": "2026-11-07T07:00:00.000Z",
-      "observedAtRaw": "2026-11-07 14:00",
-      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • เฝ้าระวัง • ไม่ใช่เซนเซอร์ BMA เดิม",
-      "levelInside": -5.59,
+      "observedAt": "2026-11-07T13:50:00.000Z",
+      "observedAtRaw": "2026-11-07 20:50",
+      "sourceStatus": "ThaiWater fallback • ฝั่งธน/บางกรวย • สถานีจริง 13.0 กม. • น้ำปกติ • ไม่ใช่เซนเซอร์ BMA เดิม",
+      "levelInside": -2.3,
       "levelOutside": null,
-      "riverLevel": -5.59,
-      "severity": "WATCH"
+      "riverLevel": -2.3,
+      "severity": "NORMAL"
     }
   ],
   "roadFlood": [
@@ -179,8 +179,8 @@
       "latitude": 13.7547,
       "longitude": 100.4781,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-11-07T07:10:00.000Z",
-      "observedAtRaw": "2026-11-07 14:10",
+      "observedAt": "2026-11-07T13:55:00.000Z",
+      "observedAtRaw": "2026-11-07 20:55",
       "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 1.1 กม. • ถ.อิสรภาพ ช่วงตลาดพรานนก (FL.BKN.01)",
       "depthCm": 0,
       "severity": "NORMAL"
@@ -207,8 +207,8 @@
       "latitude": 13.78269,
       "longitude": 100.4335,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-11-07T07:10:00.000Z",
-      "observedAtRaw": "2026-11-07 14:10",
+      "observedAt": "2026-11-07T13:55:00.000Z",
+      "observedAtRaw": "2026-11-07 20:55",
       "sourceStatus": "ThaiWater road monitor • สถานีใกล้เคียง 1.2 กม. • ถ.ฉิมพลี ช่วง ซ.ฉิมพลี 31 * (FL.TLC.01)",
       "depthCm": 0,
       "severity": "NORMAL"
@@ -221,8 +221,8 @@
       "latitude": 13.7547,
       "longitude": 100.4781,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-11-07T07:10:00.000Z",
-      "observedAtRaw": "2026-11-07 14:10",
+      "observedAt": "2026-11-07T13:55:00.000Z",
+      "observedAtRaw": "2026-11-07 20:55",
       "sourceStatus": "ThaiWater relay • รหัสตรงกัน",
       "depthCm": 0,
       "severity": "NORMAL"
@@ -235,8 +235,8 @@
       "latitude": 13.78705,
       "longitude": 100.46802,
       "kind": "ROAD_FLOOD",
-      "observedAt": "2026-11-07T07:10:00.000Z",
-      "observedAtRaw": "2026-11-07 14:10",
+      "observedAt": "2026-11-07T13:55:00.000Z",
+      "observedAtRaw": "2026-11-07 20:55",
       "sourceStatus": "ThaiWater relay • รหัสตรงกัน",
       "depthCm": 0,
       "severity": "NORMAL"
